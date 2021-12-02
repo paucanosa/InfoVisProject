@@ -105,12 +105,12 @@
 
 
 .filter-label{
-        /* border-radius: 3px; */
-        margin-left: 5px;
-        font-size: 14px;
-        color:black;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 5px;
+    font-size: 14px;
+    color:black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
 .filter-type-container{
     display: flex;
     align-items: center;
