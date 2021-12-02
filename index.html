@@ -14,79 +14,210 @@
         <div class="filters-title-container">
             <p class="filters-title">Filters</p>
         </div>
-        <div class="filters-conditional-container">
-            <!-- TODO: CREATE THESE ITEMS WITH A JS FUNCTION.  -->
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Bump" name="f_Bump" value="f_Bump">
-                <label for="f_Bump" class="filter-label"> Bump</label>
+        <div class="filter-type-container">
+            <p class="filter-type-title">Accident cause:</p>
+            <div class="filters-conditional-container">
+                <!-- TODO: CREATE THESE ITEMS WITH A JS FUNCTION.  -->
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Bump" name="f_Bump" value="f_Bump" onclick="changeFilter('Cause','Bump');">
+                    <label for="f_Bump" class="filter-label"> Bump</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Amenity" name="f_Amenity" value="f_Amenity" onclick="changeFilter('Cause','Amenity');">
+                    <label for="f_Amenity" class="filter-label"> Amenity</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Crossing" name="f_Crossing" value="f_Crossing" onclick="changeFilter('Cause','Crossing');">
+                    <label for="f_Crossing" class="filter-label"> Crossing</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Give_Way" name="f_Give_Way" value="f_Give_Way" onclick="changeFilter('Cause','Give_Way');">
+                    <label for="f_Give_Way" class="filter-label"> Give Way</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Junction" name="f_Junction" value="f_Junction" onclick="changeFilter('Cause','Junction');">
+                    <label for="f_Junction" class="filter-label"> Junction</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_No_Exit" name="f_No_Exit" value="f_No_Exit" onclick="changeFilter('Cause','No_Exit');">
+                    <label for="f_No_Exit" class="filter-label"> No Exit</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Railway" name="f_Railway" value="f_Railway" onclick="changeFilter('Cause','Railway');">
+                    <label for="f_Railway" class="filter-label"> Railway</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Roundabout" name="f_Roundabout" value="f_Roundabout" onclick="changeFilter('Cause','Roundabout');">
+                    <label for="f_Roundabout" class="filter-label"> Roundabout</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Station" name="f_Station" value="f_Station" onclick="changeFilter('Cause','Station');">
+                    <label for="f_Station" class="filter-label"> Station</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Stop" name="f_Stop" value="f_Stop" onclick="changeFilter('Cause','Stop');">
+                    <label for="f_Stop" class="filter-label"> Stop</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Traffic_Calming" name="f_Traffic_Calming" value="f_Traffic_Calming" onclick="changeFilter('Cause','Traffic_Calming');">
+                    <label for="f_Traffic_Calming" class="filter-label"> Traffic Calming</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Traffic_Signal" name="f_Traffic_Signal" value="f_Traffic_Signal" onclick="changeFilter('Cause','Traffic_Signal');">
+                    <label for="f_Traffic_Signal" class="filter-label"> Traffic Signal</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Turning_Loop" name="f_Turning_Loop" value="f_Turning_Loop" onclick="changeFilter('Cause','Turning_Loop');">
+                    <label for="f_Turning_Loop" class="filter-label"> Turning Loop</label>
+                </div>
+    
             </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Amenity" name="f_Amenity" value="f_Amenity">
-                <label for="f_Amenity" class="filter-label"> Amenity</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Crossing" name="f_Crossing" value="f_Crossing">
-                <label for="f_Crossing" class="filter-label"> Crossing</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Give_Way" name="f_Give_Way" value="f_Give_Way">
-                <label for="f_Give_Way" class="filter-label"> Give Way</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Junction" name="f_Junction" value="f_Junction">
-                <label for="f_Junction" class="filter-label"> Junction</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_No_Exit" name="f_No_Exit" value="f_No_Exit">
-                <label for="f_No_Exit" class="filter-label"> No Exit</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Railway" name="f_Railway" value="f_Railway">
-                <label for="f_Railway" class="filter-label"> Railway</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Roundabout" name="f_Roundabout" value="f_Roundabout">
-                <label for="f_Roundabout" class="filter-label"> Roundabout</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Station" name="f_Station" value="f_Station">
-                <label for="f_Station" class="filter-label"> Station</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Stop" name="f_Stop" value="f_Stop">
-                <label for="f_Stop" class="filter-label"> Stop</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Traffic_Calming" name="f_Traffic_Calming" value="f_Traffic_Calming">
-                <label for="f_Traffic_Calming" class="filter-label"> Traffic Calming</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Traffic_Signal" name="f_Traffic_Signal" value="f_Traffic_Signal">
-                <label for="f_Traffic_Signal" class="filter-label"> Traffic Signal</label>
-            </div>
-            <div class="filters-conditional-item">
-                <input type="checkbox" class="filter-checkbox-item" id="f_Turning_Loop" name="f_Turning_Loop" value="f_Turning_Loop">
-                <label for="f_Turning_Loop" class="filter-label"> Turning Loop</label>
-            </div>
-
         </div>
+        
         <div class="separator"></div>
-
-        <div class="filters-conditional-container filters-categorical-container">
-            <div>
-               <label for="c_severity" class="filter-label">Severity:</label>
-               <select name="Severity" id="c_severity">
-                   <option value="-">-</option>
-                   <option value="1">1</option>
-                   <option value="2">2</option>
-                   <option value="3">3</option>
-                 </select>
-           </div> 
+        <div class="filter-type-container">
+            <p class="filter-type-title">Severity:</p>
+            <div class="filters-conditional-container">
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Severity1" name="f_Severity1" value="f_Severity1" onclick="changeFilter('Severity','1');" >
+                    <label for="f_Severity1" class="filter-label"> 1 (Low)</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Severity2" name="f_Severity2" value="f_Severity2" onclick="changeFilter('Severity','2');">
+                    <label for="f_Severity2" class="filter-label"> 2 (Medium)</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_Severity3" name="f_Severity3" value="f_Severity3" onclick="changeFilter('Severity','3');">
+                    <label for="f_Severity3" class="filter-label"> 3 (High)</label>
+                </div>
+                <!-- <div>
+                   <label for="c_severity" class="filter-label">Severity:</label>
+                   <select name="Severity" id="c_severity">
+                       <option value="-">-</option>
+                       <option value="1">1</option>
+                       <option value="2">2</option>
+                       <option value="3">3</option>
+                     </select>
+                     <label for="c_State" class="filter-label">State:</label>
+                     <select name="State" id="c_Statey">
+                         <option value="-">-</option>
+                         <option value="1">1</option>
+                         <option value="2">2</option>
+                         <option value="3">3</option>
+                       </select>
+               </div>  -->
+               
+            </div>
         </div>
+
+        
         <div class="separator"></div>
+        <div class="filter-type-container">
+            <p class="filter-type-title">States (Provisional):</p>
+            <div class="filters-conditional-container filters-categorical-container">
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_FL" name="f_FL" value="f_FL" onclick="changeFilter('States','FL');">
+                    <label for="f_FL" class="filter-label"> Florida</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_CA" name="f_CA" value="f_CA" onclick="changeFilter('States','CA');">
+                    <label for="f_CA" class="filter-label"> California</label>
+                </div>
+                <div class="filters-conditional-item">
+                    <input type="checkbox"  id="f_GA" name="f_GA" value="f_GA" onclick="changeFilter('States','GA');">
+                    <label for="f_GA" class="filter-label"> Georgia</label>
+                </div>
+                <!-- <div>
+                   <label for="c_severity" class="filter-label">Severity:</label>
+                   <select name="Severity" id="c_severity">
+                       <option value="-">-</option>
+                       <option value="1">1</option>
+                       <option value="2">2</option>
+                       <option value="3">3</option>
+                     </select>
+                     <label for="c_State" class="filter-label">State:</label>
+                     <select name="State" id="c_Statey">
+                         <option value="-">-</option>
+                         <option value="1">1</option>
+                         <option value="2">2</option>
+                         <option value="3">3</option>
+                       </select>
+               </div>  -->
+               
+            </div>
+        </div>
+        <!-- ALABAMA	AL
+ALASKA	AK
+AMERICAN SAMOA	AS
+ARIZONA	AZ
+ARKANSAS	AR
+CALIFORNIA	CA
+COLORADO	CO
+CONNECTICUT	CT
+DELAWARE	DE
+DISTRICT OF COLUMBIA	DC
+FLORIDA	FL
+GEORGIA	GA
+GUAM	GU
+HAWAII	HI
+IDAHO	ID
+ILLINOIS	IL
+INDIANA	IN
+IOWA	IA
+KANSAS	KS
+KENTUCKY	KY
+LOUISIANA	LA
+MAINE	ME
+MARYLAND	MD
+MASSACHUSETTS	MA
+MICHIGAN	MI
+MINNESOTA	MN
+MISSISSIPPI	MS
+MISSOURI	MO
+MONTANA	MT
+NEBRASKA	NE
+NEVADA	NV
+NEW HAMPSHIRE	NH
+NEW JERSEY	NJ
+NEW MEXICO	NM
+NEW YORK	NY
+NORTH CAROLINA	NC
+NORTH DAKOTA	ND
+NORTHERN MARIANA IS	MP
+OHIO	OH
+OKLAHOMA	OK
+OREGON	OR
+PENNSYLVANIA	PA
+PUERTO RICO	PR
+RHODE ISLAND	RI
+SOUTH CAROLINA	SC
+SOUTH DAKOTA	SD
+TENNESSEE	TN
+TEXAS	TX
+UTAH	UT
+VERMONT	VT
+VIRGINIA	VA
+VIRGIN ISLANDS	VI
+WASHINGTON	WA
+WEST VIRGINIA	WV
+WISCONSIN	WI
+WYOMING	WY -->
+
+        <div class="separator"></div>
+        <div class="filters-apply-button-container">
+            <button class="filters-apply-button" onclick="applyFilters()">Apply</button>
+        </div>
+    </div>
+
+    <div id="basic-container" class="basic-visualization">
+    </div>
+    <div class="geographical-visualization-container">
     </div>
     <div id="chart" class="c-chart"></div>
+    <script src="scripts/basicVis.js"></script>
+    <script src="scripts/geoVis.js"></script>
     <script src="scripts/main.js"></script>
+    <script src="d3/d3.min.js"></script>
 </body>
 
 </html>
