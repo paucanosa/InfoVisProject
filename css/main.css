@@ -25,10 +25,30 @@
     width: calc(100% - 40px);
     border-radius: 3px;
     border: solid 2px lightgray;
-    height: 100px;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.basic-visualization__duration-container{
+    width: 50%;
+    height: 100%;
+    border-right: solid 2px lightgray;
+}
+
+.basic-visualization__customization-container{
+    width: 10%;
+    height: 100%;
+    border-right: solid 2px lightgray;
+}
+
+.basic-visualization__severity-container{
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .filters-title-container{
@@ -131,3 +151,19 @@
     border-bottom: solid 1px lightgray;
     width: 100%;
 }
+
+.toolTip {
+    position: relative;
+    display: none;
+    height: auto;
+    background: transparent ;
+    padding: 0px;
+    font-size: 12px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
+
+  .labels{
+      font-size: 10px;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      color: lightgray;
+  }
