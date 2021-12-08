@@ -15,7 +15,8 @@
     width: calc(100% - 40px);
     border-radius: 3px;
     border: solid 2px lightgray;
-    height: 250px;
+    height: 463px;
+    background-color: rgb(242, 242, 242);
 }
 
 .basic-visualization{
@@ -25,7 +26,7 @@
     width: calc(100% - 40px);
     border-radius: 3px;
     border: solid 2px lightgray;
-    height: 300px;
+    height: 330px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,6 +36,11 @@
     width: 50%;
     height: 100%;
     border-right: solid 2px lightgray;
+}
+
+.basic-visualization__histogram{
+    height: 50%;
+    width: 100%;
 }
 
 .basic-visualization__customization-container{
@@ -60,7 +66,6 @@
 }
 
 .filters-apply-button-container{
-    margin-top: 72px;
     display: flex;
     align-items: center;
     background-color: lightgray;
@@ -113,6 +118,17 @@
     align-items: center;
 }
 
+.filter-type-container--states{
+    display: flex;
+    align-items: center;
+    height: 100px;
+}
+
+.filters-states{
+    height: 80px;
+    overflow-y: auto;
+}
+
 .filters-categorical-container{
     justify-content: baseline !important;
 }
@@ -123,6 +139,10 @@
     margin-left: 15px;
 }
 
+.filters-conditional-item--states{
+    width:18%;
+    text-overflow: ellipsis;
+}
 
 .filter-label{
     margin-left: 5px;
@@ -166,4 +186,62 @@
       font-size: 10px;
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       color: lightgray;
+  }
+
+
+  /* Numerical filters */
+
+  .filters-numerical{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+      width: 100%;
+      margin-top: 10px;
+      height:40px;
+      margin-bottom: 10px;
+  }
+
+  .filters-numberical-item{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-right: 50px;
+  }
+
+  .numerical-condition-button{
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border: 0.1em solid #3e65b3;
+    border-radius: 0.38em;
+    background-image: linear-gradient(#62a6ed, #4b78d6);
+  }
+  .numerical-condition-button:hover {
+    background-image: linear-gradient(rgb(26,175,238), rgb(4,132,217)); 
+  }
+  .numerical-condition-button:active {
+    background-image: linear-gradient(rgb(3,155,218), rgb(3,110,197)); 
+  }
+
+  .numerical-condition-button--off{
+    border: 0.1em solid #868686;
+    border-radius: 0.38em;
+    background-image: linear-gradient(#8a8a8a, #4b4b4b);
+  }
+
+  .numerical-input{
+      border-radius: 3px;
+      border: solid 2px lightgray;
+      width: 50px;
+  }
+
+  .numerical-slider{
+      margin-left: 10px;
+      margin-right: 20px;
   }
