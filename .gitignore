@@ -1,4 +1,3 @@
 data/main.csv
-data/main2.csv
+data/main*.csv
 scripts/logicData.js
-data/main3.csv
