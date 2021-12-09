@@ -4,7 +4,7 @@
 <head>
     <link rel="stylesheet" href="css/main.css" />
     <script src="d3/d3.min.js"></script>
-
+    <script src="https://unpkg.com/topojson@3"></script>
 </head>
 
 <body>
@@ -193,9 +193,11 @@
         </div>
     </div>
     <div class="geographical-visualization-container">
+        <svg id="geographicalmap" width="1200" height="600"></svg>
     </div>
+
     <div id="chart" class="c-chart"></div>
-    <script type="module" src="scripts/logicData.js"></script>
+    <!-- <script type="module" src="scripts/logicData.js"></script> -->
     <script src="scripts/basicVis.js"></script>
     <script src="scripts/geoVis.js"></script>
     <script src="scripts/main.js"></script>
