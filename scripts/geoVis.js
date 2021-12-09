@@ -25,14 +25,13 @@ class GeoVis {
             height = +svg.attr("height");
 
         var projection = d3.geoAlbersUsa()
-            .translate([width/2, height/2])
-            .scale([1000]);
+        .scale(1300).translate([487.5, 305])
 
         var path = d3.geoPath();
         var g = svg.append("g");
 
         // Load states
-        d3.json("https://d3js.org/us-10m.v1.json").then( function(us) {
+        d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( function(us) {
             g.attr("class", "states")
                 .selectAll("path")
                 .data(topojson.feature(us, us.objects.states).features)
@@ -49,11 +48,12 @@ class GeoVis {
             .scaleExtent([1, 100])
             .on('zoom', function(event) {
                 g.selectAll('path')
-                .attr('transform', event.transform);
+                    .attr('transform', event.transform);
+                
                 svg.selectAll('circle')
-                .attr('transform', event.transform)
-                .attr("r", "" + (pointPixelSize / (event.transform.k ** 0.8)) + "px");
-        });
+                    .attr('transform', event.transform)
+                    .attr("r", "" + (pointPixelSize / (event.transform.k ** 0.8)) + "px");
+            });
 
         svg.call(zoom);
 
@@ -67,8 +67,7 @@ class GeoVis {
             height = +svg.attr("height");
 
         var projection = d3.geoAlbersUsa()
-				   .translate([width/2, height/2])
-				   .scale([1000]);
+        .scale(1300).translate([487.5, 305])
 
         var path = d3.geoPath();
         var g = svg.append("g");
@@ -76,7 +75,7 @@ class GeoVis {
         var points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
         const pointPixelSize = 3.0;
 
-        svg.selectAll("circle").exit().remove();
+        svg.selectAll("circle").data(points).exit().remove();
 
         // add circles to svg
         svg.selectAll("circle")
@@ -86,8 +85,6 @@ class GeoVis {
             .attr("cy", function (d) { return projection(d)[1]; })
             .attr("r", "" + pointPixelSize + "px")
             .attr("fill", "red");
-        
-            svg.selectAll("circle").data(points).exit().remove();
     }
 
     // createGeographicalChartCanvas(){

@@ -62,6 +62,7 @@ var statesData = [
   { label: "Wisconsin", value: "WI" },
   { label: "Wyoming", value: "WY" },
 ];
+
 var weatherConditions = [
   "Light Rain",
   "Overcast",
@@ -181,8 +182,10 @@ var weatherConditions = [
   "Thunder and Hail / Windy",
   "Tornado",
 ];
-var promises = [d3.csv("data/main3.csv")];
-var numericalConditionsOrder = ["=", "&gt;", "≥", "&lt;", "≤", "×"];
+
+var promises = [d3.csv("data/main100000.csv")];
+var numericalConditionsOrder = ['=', '&gt;', '≥', '&lt;', '≤', 'x'];
+
 var numericalConditionsMap = {
   temperature: "Temperature(F)",
   humidity: "Humidity(%)",
@@ -214,6 +217,7 @@ function init() {
     windspeed: { value: null, condition: "×" },
     precipitation: { value: null, condition: "×" },
   };
+
   const params = {
     data: currentData,
   };
