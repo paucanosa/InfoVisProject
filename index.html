@@ -1,200 +1,397 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <link rel="stylesheet" href="css/main.css" />
     <script src="d3/d3.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1 class="main-title">InfoVis Project - US Car Accidents 2015-2020</h1>
 
-    <div class="filters">
-        <div class="filters-title-container">
-            <p class="filters-title">Filters</p>
+    <div id="mainfilters" class="filters filters-disabled" >
+      <div class="filters-title-container button-accordion" onclick="changeFilterAccordion()">
+        <p class="filters-title">Filters</p>
+        <p id="filteraccordionicon"class="filters-title--right">+</p>
+      </div>
+      <div class="filter-type-container">
+        <p class="filter-type-title">Accident cause:</p>
+        <div class="filters-conditional-container">
+          <!-- TODO: CREATE THESE ITEMS WITH A JS FUNCTION.  -->
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Bump"
+              name="f_Bump"
+              value="f_Bump"
+              onclick="changeFilter('Cause','Bump');"
+            />
+            <label for="f_Bump" class="filter-label"> Bump</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Amenity"
+              name="f_Amenity"
+              value="f_Amenity"
+              onclick="changeFilter('Cause','Amenity');"
+            />
+            <label for="f_Amenity" class="filter-label"> Amenity</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Crossing"
+              name="f_Crossing"
+              value="f_Crossing"
+              onclick="changeFilter('Cause','Crossing');"
+            />
+            <label for="f_Crossing" class="filter-label"> Crossing</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Give_Way"
+              name="f_Give_Way"
+              value="f_Give_Way"
+              onclick="changeFilter('Cause','Give_Way');"
+            />
+            <label for="f_Give_Way" class="filter-label"> Give Way</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Junction"
+              name="f_Junction"
+              value="f_Junction"
+              onclick="changeFilter('Cause','Junction');"
+            />
+            <label for="f_Junction" class="filter-label"> Junction</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_No_Exit"
+              name="f_No_Exit"
+              value="f_No_Exit"
+              onclick="changeFilter('Cause','No_Exit');"
+            />
+            <label for="f_No_Exit" class="filter-label"> No Exit</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Railway"
+              name="f_Railway"
+              value="f_Railway"
+              onclick="changeFilter('Cause','Railway');"
+            />
+            <label for="f_Railway" class="filter-label"> Railway</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Roundabout"
+              name="f_Roundabout"
+              value="f_Roundabout"
+              onclick="changeFilter('Cause','Roundabout');"
+            />
+            <label for="f_Roundabout" class="filter-label"> Roundabout</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Station"
+              name="f_Station"
+              value="f_Station"
+              onclick="changeFilter('Cause','Station');"
+            />
+            <label for="f_Station" class="filter-label"> Station</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Stop"
+              name="f_Stop"
+              value="f_Stop"
+              onclick="changeFilter('Cause','Stop');"
+            />
+            <label for="f_Stop" class="filter-label"> Stop</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Traffic_Calming"
+              name="f_Traffic_Calming"
+              value="f_Traffic_Calming"
+              onclick="changeFilter('Cause','Traffic_Calming');"
+            />
+            <label for="f_Traffic_Calming" class="filter-label">
+              Traffic Calming</label
+            >
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Traffic_Signal"
+              name="f_Traffic_Signal"
+              value="f_Traffic_Signal"
+              onclick="changeFilter('Cause','Traffic_Signal');"
+            />
+            <label for="f_Traffic_Signal" class="filter-label">
+              Traffic Signal</label
+            >
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Turning_Loop"
+              name="f_Turning_Loop"
+              value="f_Turning_Loop"
+              onclick="changeFilter('Cause','Turning_Loop');"
+            />
+            <label for="f_Turning_Loop" class="filter-label">
+              Turning Loop</label
+            >
+          </div>
         </div>
-        <div class="filter-type-container">
-            <p class="filter-type-title">Accident cause:</p>
-            <div class="filters-conditional-container">
-                <!-- TODO: CREATE THESE ITEMS WITH A JS FUNCTION.  -->
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Bump" name="f_Bump" value="f_Bump"
-                        onclick="changeFilter('Cause','Bump');">
-                    <label for="f_Bump" class="filter-label"> Bump</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Amenity" name="f_Amenity" value="f_Amenity"
-                        onclick="changeFilter('Cause','Amenity');">
-                    <label for="f_Amenity" class="filter-label"> Amenity</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Crossing" name="f_Crossing" value="f_Crossing"
-                        onclick="changeFilter('Cause','Crossing');">
-                    <label for="f_Crossing" class="filter-label"> Crossing</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Give_Way" name="f_Give_Way" value="f_Give_Way"
-                        onclick="changeFilter('Cause','Give_Way');">
-                    <label for="f_Give_Way" class="filter-label"> Give Way</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Junction" name="f_Junction" value="f_Junction"
-                        onclick="changeFilter('Cause','Junction');">
-                    <label for="f_Junction" class="filter-label"> Junction</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_No_Exit" name="f_No_Exit" value="f_No_Exit"
-                        onclick="changeFilter('Cause','No_Exit');">
-                    <label for="f_No_Exit" class="filter-label"> No Exit</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Railway" name="f_Railway" value="f_Railway"
-                        onclick="changeFilter('Cause','Railway');">
-                    <label for="f_Railway" class="filter-label"> Railway</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Roundabout" name="f_Roundabout" value="f_Roundabout"
-                        onclick="changeFilter('Cause','Roundabout');">
-                    <label for="f_Roundabout" class="filter-label"> Roundabout</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Station" name="f_Station" value="f_Station"
-                        onclick="changeFilter('Cause','Station');">
-                    <label for="f_Station" class="filter-label"> Station</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Stop" name="f_Stop" value="f_Stop"
-                        onclick="changeFilter('Cause','Stop');">
-                    <label for="f_Stop" class="filter-label"> Stop</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Traffic_Calming" name="f_Traffic_Calming" value="f_Traffic_Calming"
-                        onclick="changeFilter('Cause','Traffic_Calming');">
-                    <label for="f_Traffic_Calming" class="filter-label"> Traffic Calming</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Traffic_Signal" name="f_Traffic_Signal" value="f_Traffic_Signal"
-                        onclick="changeFilter('Cause','Traffic_Signal');">
-                    <label for="f_Traffic_Signal" class="filter-label"> Traffic Signal</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Turning_Loop" name="f_Turning_Loop" value="f_Turning_Loop"
-                        onclick="changeFilter('Cause','Turning_Loop');">
-                    <label for="f_Turning_Loop" class="filter-label"> Turning Loop</label>
-                </div>
+      </div>
 
-            </div>
+      <div class="separator"></div>
+      <div class="filter-type-container">
+        <p class="filter-type-title">Severity:</p>
+        <div class="filters-conditional-container">
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Severity1"
+              name="f_Severity1"
+              value="f_Severity1"
+              onclick="changeFilter('Severity','1');"
+            />
+            <label for="f_Severity1" class="filter-label"> 1 (Low)</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Severity2"
+              name="f_Severity2"
+              value="f_Severity2"
+              onclick="changeFilter('Severity','2');"
+            />
+            <label for="f_Severity2" class="filter-label"> 2 (Medium)</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Severity3"
+              name="f_Severity3"
+              value="f_Severity3"
+              onclick="changeFilter('Severity','3');"
+            />
+            <label for="f_Severity3" class="filter-label"> 3 (High)</label>
+          </div>
+          <div class="filters-conditional-item">
+            <input
+              type="checkbox"
+              id="f_Severity3"
+              name="f_Severity4"
+              value="f_Severity4"
+              onclick="changeFilter('Severity','4');"
+            />
+            <label for="f_Severity3" class="filter-label"> 4 (Critical)</label>
+          </div>
         </div>
+      </div>
 
-        <div class="separator"></div>
-        <div class="filter-type-container">
-            <p class="filter-type-title">Severity:</p>
-            <div class="filters-conditional-container">
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Severity1" name="f_Severity1" value="f_Severity1"
-                        onclick="changeFilter('Severity','1');">
-                    <label for="f_Severity1" class="filter-label"> 1 (Low)</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Severity2" name="f_Severity2" value="f_Severity2"
-                        onclick="changeFilter('Severity','2');">
-                    <label for="f_Severity2" class="filter-label"> 2 (Medium)</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Severity3" name="f_Severity3" value="f_Severity3"
-                        onclick="changeFilter('Severity','3');">
-                    <label for="f_Severity3" class="filter-label"> 3 (High)</label>
-                </div>
-                <div class="filters-conditional-item">
-                    <input type="checkbox" id="f_Severity3" name="f_Severity4" value="f_Severity4"
-                        onclick="changeFilter('Severity','4');">
-                    <label for="f_Severity3" class="filter-label"> 4 (Critical)</label>
-                </div>
-            </div>
+      <div class="separator"></div>
+      <div class="filter-type-container--states">
+        <p class="filter-type-title">States:</p>
+        <div
+          id="statesfilters"
+          class="
+            filters-conditional-container
+            filters-categorical-container
+            filters-states
+          "
+        ></div>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="filter-type-container">
+        <p class="filter-type-title">Weather condition:</p>
+        <div
+          id="weatherconditions"
+          class="
+            filters-conditional-container
+            filters-categorical-container
+            filters-states
+          "
+        ></div>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="filters-numerical">
+        <div class="filters-numberical-item">
+          <p class="filter-label">Temperature (°F)</p>
+          <p
+            id="temperaturecondition"
+            class="numerical-condition-button numerical-condition-button--off"
+            onclick="changeNumericalCondition('temperature')"
+          >
+            ×
+          </p>
+          <input
+            id="temperatureSlide"
+            class="numerical-slider"
+            type="range"
+            name="rangeInput"
+            min="0"
+            max="212"
+            onchange="changeFilter('temperature',this.value);"
+          />
+          <input
+            type="text"
+            class="numerical-input"
+            id="temperatureInput"
+            value="0"
+            onkeyup="changeFilter('temperature',this.value);"
+          />
         </div>
-
-
-        <div class="separator"></div>
-        <div class="filter-type-container--states">
-            <p class="filter-type-title">States:</p>
-            <div id="statesfilters" class="filters-conditional-container filters-categorical-container filters-states">
-            </div>
+        <div class="filters-numberical-item">
+          <p class="filter-label">Humidity (%)</p>
+          <p
+            id="humiditycondition"
+            class="numerical-condition-button numerical-condition-button--off"
+            onclick="changeNumericalCondition('humidity')"
+          >
+            ×
+          </p>
+          <input
+            id="humiditySlide"
+            class="numerical-slider"
+            type="range"
+            name="rangeInput"
+            min="0"
+            max="100"
+            onchange="changeFilter('humidity',this.value);"
+          />
+          <input
+            type="text"
+            class="numerical-input"
+            id="humidityInput"
+            value="0"
+            onkeyup="changeFilter('humidity',this.value);"
+          />
         </div>
-
-        <div class="separator"></div>
-
-        <div class="filter-type-container">
-            <p class="filter-type-title">Weather condition:</p>
-            <div id="weatherconditions"
-                class="filters-conditional-container filters-categorical-container filters-states">
-            </div>
+      </div>
+      <div class="separator"></div>
+      <div class="filters-numerical">
+        <div class="filters-numberical-item">
+          <p class="filter-label">Visibility (MI)</p>
+          <p
+            id="visibilitycondition"
+            class="numerical-condition-button numerical-condition-button--off"
+            onclick="changeNumericalCondition('visibility')"
+          >
+            ×
+          </p>
+          <input
+            id="visibilitySlide"
+            class="numerical-slider"
+            type="range"
+            name="rangeInput"
+            min="0"
+            max="212"
+            onchange="changeFilter('visibility',this.value);"
+          />
+          <input
+            type="text"
+            class="numerical-input"
+            id="visibilityInput"
+            value="0"
+            onkeyup="changeFilter('visibility',this.value);"
+          />
         </div>
-
-        <div class="separator"></div>
-
-        <div class="filters-numerical">
-            <div class="filters-numberical-item">
-                <p class="filter-label">Temperature (°F)</p>
-                <p id="temperaturecondition" class="numerical-condition-button numerical-condition-button--off" onclick="changeNumericalCondition('temperature')">x</p>
-                <input id="temperatureSlide" class="numerical-slider" type="range" name="rangeInput" min="0" max="212"
-                    onchange="changeFilter('temperature',this.value);">
-                <input type="text" class="numerical-input" id="temperatureInput" value="0" onkeyup="changeFilter('temperature',this.value);">
-            </div>
-            <div class="filters-numberical-item">
-                <p class="filter-label">Humidity (%)</p>
-                <p id="humiditycondition" class="numerical-condition-button numerical-condition-button--off" onclick="changeNumericalCondition('humidity')">x</p>
-                <input id="humiditySlide" class="numerical-slider" type="range" name="rangeInput" min="0" max="100"
-                    onchange="changeFilter('humidity',this.value);">
-                <input type="text" class="numerical-input" id="humidityInput" value="0" onkeyup="changeFilter('humidity',this.value);">
-            </div>
+        <div class="filters-numberical-item">
+          <p class="filter-label">Wind speed (MPH)</p>
+          <p
+            id="windspeedcondition"
+            class="numerical-condition-button numerical-condition-button--off"
+            onclick="changeNumericalCondition('windspeed')"
+          >
+            ×
+          </p>
+          <input
+            id="windspeedSlide"
+            class="numerical-slider"
+            type="range"
+            name="rangeInput"
+            min="0"
+            max="100"
+            onchange="changeFilter('windspeed',this.value);"
+          />
+          <input
+            type="text"
+            class="numerical-input"
+            id="windspeedInput"
+            value="0"
+            onkeyup="changeFilter('windspeed',this.value);"
+          />
         </div>
-        <div class="separator"></div>
-        <div class="filters-numerical">
-            <div class="filters-numberical-item">
-                <p class="filter-label">Visibility (MI)</p>
-                <p id="visibilitycondition" class="numerical-condition-button numerical-condition-button--off" onclick="changeNumericalCondition('visibility')">x</p>
-                <input id="visibilitySlide" class="numerical-slider" type="range" name="rangeInput" min="0" max="212"
-                    onchange="changeFilter('visibility',this.value);">
-                <input type="text" class="numerical-input" id="visibilityInput" value="0" onkeyup="changeFilter('visibility',this.value);">
-            </div>
-            <div class="filters-numberical-item">
-                <p class="filter-label">Wind speed (MPH)</p>
-                <p id="windspeedcondition" class="numerical-condition-button numerical-condition-button--off" onclick="changeNumericalCondition('windspeed')">x</p>
-                <input id="windspeedSlide" class="numerical-slider" type="range" name="rangeInput" min="0" max="100"
-                    onchange="changeFilter('windspeed',this.value);">
-                <input type="text" class="numerical-input" id="windspeedInput" value="0" onkeyup="changeFilter('windspeed',this.value);">
-            </div>
-            <div class="filters-numberical-item">
-                <p class="filter-label">Precipitation (IN)</p>
-                <p id="precipitationcondition" class="numerical-condition-button numerical-condition-button--off" onclick="changeNumericalCondition('precipitation')">x</p>
-                <input id="precipitationSlide" class="numerical-slider" type="range" name="rangeInput" min="0" max="100"
-                    onchange="changeFilter('precipitation',this.value);">
-                <input type="text" class="numerical-input" id="precipitationInput" value="0" onkeyup="changeFilter('precipitation',this.value);">
-            </div>
+        <div class="filters-numberical-item">
+          <p class="filter-label">Precipitation (IN)</p>
+          <p
+            id="precipitationcondition"
+            class="numerical-condition-button numerical-condition-button--off"
+            onclick="changeNumericalCondition('precipitation')"
+          >
+            ×
+          </p>
+          <input
+            id="precipitationSlide"
+            class="numerical-slider"
+            type="range"
+            name="rangeInput"
+            min="0"
+            max="100"
+            onchange="changeFilter('precipitation',this.value);"
+          />
+          <input
+            type="text"
+            class="numerical-input"
+            id="precipitationInput"
+            value="0"
+            onkeyup="changeFilter('precipitation',this.value);"
+          />
         </div>
-        <div class="separator"></div>
-        <div class="filters-apply-button-container">
-            <button class="filters-apply-button" onclick="applyFilters()">Apply</button>
-        </div>
-
+      </div>
+      <div class="separator"></div>
+      <div class="filters-apply-button-container">
+        <button class="filters-apply-button" onclick="applyFilters()">
+          Apply
+        </button>
+      </div>
     </div>
 
     <div id="basic-container" class="basic-visualization">
-        <div class="basic-visualization__duration-container">
-            <div id="histogramchart" class="basic-visualization__histogram"></div>
-            <div id="boxplotchart" class="basic-visualization__histogram"></div>
-        </div>
-        <div class="basic-visualization__customization-container">
-
-        </div>
-        <div id="severitychart" class="basic-visualization__severity-container">
-            <!-- <svg id="severitychart" ></svg> -->
-        </div>
+      <div class="basic-visualization__duration-container">
+        <p class="chart-title">Time distribution</p>
+        <div id="histogramchart" class="basic-visualization__histogram"></div>
+        <div id="boxplotchart" class="basic-visualization__histogram"></div>
+      </div>
+      <div class="basic-visualization__customization-container">
+        <p class="chart-title">Customization</p>
+      </div>
+      <div id="severitychart" class="basic-visualization__severity-container">
+        <p class="chart-title">Severity of accidents</p>
+      </div>
     </div>
     <div class="geographical-visualization-container">
-        <svg id="geographicalchart" width="1200" height="600"></svg>
-        <canvas id="geographicalchartcanvas" width="1200" height="600"></canvas>
+      <svg id="geographicalchart" width="1200" height="600"></svg>
+      <canvas id="geographicalchartcanvas" width="1200" height="600"></canvas>
     </div>
 
     <div id="chart" class="c-chart"></div>
@@ -203,6 +400,5 @@
     <script src="scripts/geoVis.js"></script>
     <script src="scripts/main.js"></script>
     <script src="d3/d3.min.js"></script>
-</body>
-
+  </body>
 </html>
