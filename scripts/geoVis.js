@@ -2,6 +2,7 @@ class GeoVis {
 
     constructor(params){
         this.currentData = params.data;
+        this.points = [];
 
         //this.createGeographicalChart();
         this.createGeographicalChart()
@@ -12,20 +13,20 @@ class GeoVis {
         this.currentData = filteredData;
         console.log("GeoVis recieved new data!")
         this.updateCharts();
-
     }
 
     updateCharts(){
+        this.updateGeographicalChart();
     }
 
     createGeographicalChart(){
         const svg = d3.select("#geographicalchart"),
             width = +svg.attr("width"),
             height = +svg.attr("height");
-        
+
         var projection = d3.geoAlbersUsa()
-				   .translate([width/2, height/2])
-				   .scale([1000]);
+            .translate([width/2, height/2])
+            .scale([1000]);
 
         var path = d3.geoPath();
         var g = svg.append("g");
@@ -39,19 +40,10 @@ class GeoVis {
                 .attr("fill", "lightblue")
                 .attr("d", path)
                 .style("stroke", "white");
+                
         });
 
-        var points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
         const pointPixelSize = 3.0;
-
-        // add circles to svg
-        svg.selectAll("circle")
-            .data(points).enter()
-            .append("circle")
-            .attr("cx", function (d) { return projection(d)[0]; })
-            .attr("cy", function (d) { return projection(d)[1]; })
-            .attr("r", "" + pointPixelSize + "px")
-            .attr("fill", "red");
 
         var zoom = d3.zoom()
             .scaleExtent([1, 100])
@@ -64,10 +56,39 @@ class GeoVis {
         });
 
         svg.call(zoom);
+
+        this.updateGeographicalChart();
     }
 
 
+    updateGeographicalChart(){
+        const svg = d3.select("#geographicalchart"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
 
+        var projection = d3.geoAlbersUsa()
+				   .translate([width/2, height/2])
+				   .scale([1000]);
+
+        var path = d3.geoPath();
+        var g = svg.append("g");
+
+        var points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
+        const pointPixelSize = 3.0;
+
+        svg.selectAll("circle").exit().remove();
+
+        // add circles to svg
+        svg.selectAll("circle")
+            .data(points).enter()
+            .append("circle")
+            .attr("cx", function (d) { return projection(d)[0]; })
+            .attr("cy", function (d) { return projection(d)[1]; })
+            .attr("r", "" + pointPixelSize + "px")
+            .attr("fill", "red");
+        
+            svg.selectAll("circle").data(points).exit().remove();
+    }
 
     // createGeographicalChartCanvas(){
     //     const svg = d3.select("#geographicalchartcanvas"),
