@@ -2,7 +2,6 @@
 // import {statesData} from "./logicData";
 
 var statesData = [
-<<<<<<< HEAD
   { label: "Alabama", value: "AL" },
   { label: "Alaska", value: "AK" },
   { label: "American Samoa", value: "AS" },
@@ -184,7 +183,7 @@ var weatherConditions = [
   "Tornado",
 ];
 
-var promises = [d3.csv("data/main100000.csv")];
+var promises = [d3.csv("data/main3.csv")];
 var numericalConditionsOrder = ['=', '&gt;', '≥', '&lt;', '≤', 'x'];
 
 var numericalConditionsMap = {

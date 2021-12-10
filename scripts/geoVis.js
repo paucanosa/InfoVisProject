@@ -60,11 +60,13 @@ class GeoVis {
         var path = d3.geoPath();
         var g = svg.append("g");
 
+        // Get points and counts per state
         this.points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
 
         this.statesData.forEach(stateData => this.stateCounts[stateData.label] = 0);
         this.currentData.forEach(row => this.stateCounts[this.stateMapping[row.State]] += 1);
         
+        // Calculate stats
         this.stateCountStats = {
             'min': 0,
             'max': 0,
@@ -90,11 +92,13 @@ class GeoVis {
 
         var stateCounts = this.stateCounts;
 
+        // Remove all states
         svg.selectAll("path")
             .data([])
             .exit()
             .remove();
 
+        // Add states with updated colors
         d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
             g.attr("class", "states")
                 .selectAll("path")
@@ -104,6 +108,51 @@ class GeoVis {
                 .attr("d", path)
                 .style("stroke", "white");
         });
+        
+        // Add gradient object
+        var colorScaleGradient = svg.append('defs')
+            .append('linearGradient')
+            .attr('id', 'colorScaleGradient')
+            .attr('x1', '0%')
+            .attr('x2', '100%')
+            .attr('y1', '0%')
+            .attr('y2', '0%');
+            
+        colorScaleGradient.selectAll('stop')
+            .data([colorScale(0), colorScale(this.stateCountStats.max)])
+            .enter()
+            .append('stop')
+            .style('stop-color', d => d)
+            .attr('offset', (_, index) => {
+                return index * 100 + '%';
+            })
+        
+        // Add legend and min max text
+        svg.append("rect")
+            .attr("class", "legendRect")
+            .attr("x", width - width / 4)
+            .attr("y", 10)
+            .attr("width", width / 4)
+            .attr("height", 10)
+            .style("fill", "url(#colorScaleGradient)")
+            .style("stroke", "black")
+            .style("stroke-width", "0.5px");
+
+        svg.append("text")
+            .data([0])
+            .attr("text-anchor", "start")
+            .attr("x", width - width / 4)
+            .attr("y", 30)
+            .attr("dy", ".35em")
+            .text(d => d);
+
+        svg.append("text")
+            .data([this.stateCountStats.max])
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", 30)
+            .attr("dy", ".35em")
+            .text(d => d);
 
         // // Remove points from svg that aren't present
         // svg.selectAll("circle")
