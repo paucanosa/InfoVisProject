@@ -2,6 +2,7 @@
 // import {statesData} from "./logicData";
 
 var statesData = [
+<<<<<<< HEAD
   { label: "Alabama", value: "AL" },
   { label: "Alaska", value: "AK" },
   { label: "American Samoa", value: "AS" },
@@ -44,9 +45,9 @@ var statesData = [
   { label: "Northern Mariana Islands", value: "MP" },
   { label: "Ohio", value: "OH" },
   { label: "Oklahoma", value: "OK" },
-  { label: "Oregan", value: "OR" },
+  { label: "Oregon", value: "OR" },
   { label: "Palau", value: "PW" },
-  { label: "Pennsilvania", value: "PA" },
+  { label: "Pennsylvania", value: "PA" },
   { label: "Puerto Rico", value: "PR" },
   { label: "Rhode Island", value: "RI" },
   { label: "South Carolina", value: "SC" },
@@ -220,7 +221,9 @@ function init() {
 
   const params = {
     data: currentData,
+    statesData: statesData,
   };
+
   initFiltersElements();
   basicVis = new BasicVis(params);
   geoVis = new GeoVis(params);
