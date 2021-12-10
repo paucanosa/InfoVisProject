@@ -126,6 +126,16 @@ class GeoVis {
             .attr('offset', (_, index) => {
                 return index * 100 + '%';
             })
+
+        svg.selectAll('rect')
+            .data([])
+            .exit()
+            .remove();
+        
+        svg.selectAll('text')
+            .data([])
+            .exit()
+            .remove();
         
         // Add legend and min max text
         svg.append("rect")
@@ -172,7 +182,7 @@ class GeoVis {
         var zoom = d3.zoom()
             .scaleExtent([1, 100])
             .on('zoom', event => {
-                g.selectAll('path')
+                svg.selectAll('path')
                     .attr('transform', event.transform);
                 
                 svg.selectAll('circle')
