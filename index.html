@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="css/main.css" />
     <script src="d3/d3.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
+    <link rel="stylesheet" href="css/rSlider.min.css">
+    <script src="d3/rSlider.min.js"></script>
   </head>
 
   <body>
@@ -387,6 +389,12 @@
       </div>
       <div id="severitychart" class="basic-visualization__severity-container">
         <p class="chart-title">Severity of accidents</p>
+      </div>
+    </div>
+    <div class="main-slider-container">
+      <p class="chart-title">Time selector</p>
+      <div class="main-slider-item">
+        <input type="text" id="sampleSlider"/>
       </div>
     </div>
     <div class="geographical-visualization-container">

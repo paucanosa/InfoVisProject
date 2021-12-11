@@ -285,3 +285,20 @@
   margin-left: 10px;
   margin-right: 20px;
 }
+
+
+/* Main time slider */
+.main-slider-container{
+  margin: 20px;
+  width: calc(100% - 40px);
+  height: 90px;
+  border: solid 2px lightgray;
+  border-radius: 3px;
+}
+
+.main-slider-item{
+  margin-left: 20px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+}

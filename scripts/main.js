@@ -1,6 +1,19 @@
 //FIXME: Don't know why it does not let me import the state data.
 // import {statesData} from "./logicData";
-
+var monthMap = {
+  'Jan': 1,
+  'Feb': 2,
+  'Mar': 3,
+  'Apr': 4,
+  'May': 5,
+  'Jun': 6,
+  'Jul': 7,
+  'Aug': 8,
+  'Sep': 9,
+  'Oct': 10,
+  'Nov': 11,
+  'Dec': 12,
+};
 var statesData = [
   { label: "Alabama", value: "AL" },
   { label: "Alaska", value: "AK" },
@@ -184,7 +197,7 @@ var weatherConditions = [
 ];
 
 var promises = [d3.csv("data/main3.csv")];
-var numericalConditionsOrder = ['=', '&gt;', '≥', '&lt;', '≤', 'x'];
+var numericalConditionsOrder = ["=", "&gt;", "≥", "&lt;", "≤", "x"];
 
 var numericalConditionsMap = {
   temperature: "Temperature(F)",
@@ -216,6 +229,7 @@ function init() {
     visibility: { value: null, condition: "×" },
     windspeed: { value: null, condition: "×" },
     precipitation: { value: null, condition: "×" },
+    time: { start: "Jan", end: "Dec", type: "Months" },
   };
 
   const params = {
@@ -227,6 +241,35 @@ function init() {
   basicVis = new BasicVis(params);
   geoVis = new GeoVis(params);
 }
+
+var mySlider = new rSlider({
+  target: "#sampleSlider",
+  values: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
+  range: true,
+  width: "1350px",
+  tooltip: false,
+  scale: true,
+  labels: true,
+  set: ["Jan", "Dec"],
+  onChange: function (values) {
+    activeFilters.time.start = values.toString().substring(0, 3);
+    activeFilters.time.end = values.toString().substring(4,7);
+    applyFilters();
+  },
+});
 
 function initFiltersElements() {
   var parentNode = document.getElementById("statesfilters");
@@ -333,7 +376,6 @@ function changeFilter(type, value) {
       }
     }
   }
-  console.log(activeFilters);
 }
 
 function changeNumericalCondition(filtertype) {
@@ -351,14 +393,18 @@ function changeNumericalCondition(filtertype) {
         ? "numerical-condition-button numerical-condition-button--off"
         : "numerical-condition-button";
     activeFilters[filtertype].condition = numericalConditionsOrder[index + 1];
-    console.log(index);
-    console.log(numericalConditionsOrder[index + 1]);
   }
-  console.log(activeFilters);
 }
 
 function applyFilters() {
   var newData = data;
+  if (activeFilters.time.start != "" && activeFilters.time.end != "") {
+    var parseDate = d3.timeParse("%Y-%m");
+    newData = newData.filter(function (row) {
+      var month = new Date(parseDate(row["Start_Time"].slice(0,7))).getMonth() + 1;
+      return month >= monthMap[activeFilters.time.start] && month <= monthMap[activeFilters.time.end];
+    });
+  }
   if (activeFilters.severity.length > 0)
     newData = newData.filter(function (row) {
       return activeFilters.severity.includes(row["Severity"]);
@@ -390,8 +436,6 @@ function applyFilters() {
   ];
   for (let i = 0; i < numericalConditions.length; ++i) {
     if (activeFilters[numericalConditions[i]].condition != "×") {
-      console.log(activeFilters[numericalConditions[i]].condition);
-
       switch (activeFilters[numericalConditions[i]].condition) {
         case "=":
           newData = newData.filter(function (row) {
@@ -402,19 +446,12 @@ function applyFilters() {
           });
           break;
         case "&gt;":
-          // console.log('Greater than')
-          // console.log(Number(activeFilters[numericalConditions[i]].value))
-          // console.log(numericalConditionsMap[numericalConditions[i]])
-          console.log(newData);
           newData = newData.filter(function (row) {
-            // console.log(parseInt(row[numericalConditionsMap[numericalConditions[i]]]),Number(activeFilters[numericalConditions[i]].value))
-            // console.log(parseInt(row[numericalConditionsMap[numericalConditions[i]]]) > parseInt(activeFilters[numericalConditions[i]].value))
             return (
               parseInt(row[numericalConditionsMap[numericalConditions[i]]]) >
               Number(activeFilters[numericalConditions[i]].value)
             );
           });
-          console.log(newData);
           break;
         case "≥":
           newData = newData.filter(function (row) {
@@ -441,7 +478,6 @@ function applyFilters() {
           });
           break;
       }
-      console.log(numericalConditionsMap[numericalConditions[i]]);
     }
   }
   currentData = newData;
@@ -453,16 +489,14 @@ function updateData() {
   basicVis.updateData(currentData);
 }
 
-function changeFilterAccordion(){
-  const node = document.getElementById('filteraccordionicon');
-  const parentNode = document.getElementById('mainfilters');
-  if(node.innerHTML=='+'){
-    parentNode.className = "filters"
-    node.innerHTML = '-'
+function changeFilterAccordion() {
+  const node = document.getElementById("filteraccordionicon");
+  const parentNode = document.getElementById("mainfilters");
+  if (node.innerHTML == "+") {
+    parentNode.className = "filters";
+    node.innerHTML = "-";
+  } else {
+    node.innerHTML = "+";
+    parentNode.className = "filters filters-disabled";
   }
-  else {
-    node.innerHTML = '+'
-    parentNode.className = "filters filters-disabled"
-  }
-  
 }
