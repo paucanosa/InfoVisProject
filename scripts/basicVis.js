@@ -5,7 +5,7 @@ class BasicVis {
     // Severity bar chart data
     this.marginBarChart = { top: 30, right: 30, bottom: 70, left: 60 };
     this.widthBarChart =
-      575 - this.marginBarChart.left - this.marginBarChart.right;
+      300 - this.marginBarChart.left - this.marginBarChart.right;
     this.heightBarChart =
       275 - this.marginBarChart.top - this.marginBarChart.bottom;
     this.xBarChart = null;
@@ -28,7 +28,7 @@ class BasicVis {
     this.widthHistogram =
       700 - this.marginHistogram.left - this.marginHistogram.right;
     this.heightHistogram =
-      175 - this.marginHistogram.top - this.marginHistogram.bottom;
+    275 - this.marginHistogram.top - this.marginHistogram.bottom;
 
     //Boxplot data
     this.xBoxplot = null;
@@ -46,7 +46,7 @@ class BasicVis {
     this.heightBoxplot =
       175 - this.marginBoxplot.top - this.marginBoxplot.bottom;
 
-    this.createBarChart();
+    this.createPieChart();
     this.createHistogramChart();
     //this.createBoxPlotChart();
   }
@@ -54,6 +54,71 @@ class BasicVis {
   updateData(filteredData) {
     this.currentData = filteredData;
     this.updateCharts();
+  }
+
+  createPieChart() {
+    // set the dimensions and margins of the graph
+    const width = 300,
+    height = 300,
+    margin = 40;
+
+    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+    const radius = Math.min(width, height) / 2 - margin;
+
+    // append the svg object to the div called 'my_dataviz'
+    const svg = d3.select("#severitychart")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width/2}, ${height/2})`);
+
+    this.updatePieChart(svg)
+  }
+
+  updatePieChart(svg) {
+    // set the dimensions and margins of the graph
+    const width = 300,
+    height = 300,
+    margin = 40;
+
+    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+    const radius = Math.min(width, height) / 2 - margin;
+
+    if (!svg) var svg = d3.select("#severitychart").select("svg");
+
+    const data = {1: this.currentData.filter(function (d) {return d["Severity"] == 1;}).length,
+                  2: this.currentData.filter(function (d) {return d["Severity"] == 2;}).length,
+                  3: this.currentData.filter(function (d) {return d["Severity"] == 3;}).length,
+                  4: this.currentData.filter(function (d) {return d["Severity"] == 4;}).length}
+
+    // set the color scale
+    const color = d3.scaleOrdinal()
+    .range(["#ff7b7b", "#ff5252", "#ff0000", "#a70000"])
+
+    // Compute the position of each group on the pie:
+    const pie = d3.pie()
+    .value(function(d) {return d[1]; })
+    .sort(function(a, b) { return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
+    const data_ready = pie(Object.entries(data))
+
+    // map to data
+    const u = svg.selectAll("path")
+      .data(data_ready)
+
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    u
+      .join('path')
+      .transition()
+      .duration(1000)
+      .attr('d', d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius)
+      )
+      .attr('fill', function(d){ return(color(d.data[0])) })
+      .attr("stroke", "white")
+      .style("stroke-width", "2px")
+      .style("opacity", 1)
   }
 
   createBarChart() {
@@ -186,8 +251,9 @@ class BasicVis {
   }
 
   updateCharts() {
-    this.updateBarChart();
+    //this.updateBarChart();
     this.updateHistogramChart();
+    this.updatePieChart();
     //this.createBoxPlotChart()
   }
 
