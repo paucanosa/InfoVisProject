@@ -185,8 +185,8 @@ class GeoVis {
 
             translateLongLat = [stateData.longitude, stateData.latitude];
             translatePoint = [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25];
-            translateBounds = [[this.projection(translateLongLat)[0] - width / 2, this.projection(translateLongLat)[1] - height / 2],
-                               [this.projection(translateLongLat)[0] + width / 2, this.projection(translateLongLat)[1] + height / 2]];
+            translateBounds = [[this.projection(translateLongLat)[0], this.projection(translateLongLat)[1]],
+                               [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1]]];
         } else {
             translateBounds = [[-width, -height], [width * 2, height * 2]];
         }
