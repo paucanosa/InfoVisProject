@@ -305,7 +305,7 @@ class GeoVis {
                 .attr("d", path)
                 .style("stroke", "white")
                 .on('click', event => {
-                    this.selectedState = event.path[0].__data__.properties.name;
+                    this.selectedState = event.target.__data__.properties.name;
                     this.updateSideChart();
                 });
         });
