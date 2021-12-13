@@ -17,6 +17,9 @@ class GeoVis {
 
         this.createGeographicalChart();
         this.createSideChart();
+
+        this.geographicalSvg = null;
+        this.sideSvg = null;
     }
 
     updateData(filteredData){
@@ -30,32 +33,26 @@ class GeoVis {
     }
 
     createSideChart(){
-        const svg = d3.select("#geographicalsidechart"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+        this.sideSvg = d3.select("#geographicalsidechart");
         
-        // // The scale and translation are recommended by the albers-10m dataset creators
-        // this.projection = d3.geoAlbersUsa()
-        //     .scale(1300)
-        //     .translate([487.5, 305])
-
-        var path = d3.geoPath();
-        var g = svg.append("g");
+        const width = +this.sideSvg.attr("width"),
+            height = +this.sideSvg.attr("height");
 
         this.updateSideChart();
     }
 
     updateSideChart(){
-        const svg = d3.select("#geographicalsidechart"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+        this.sideSvg = d3.select("#geographicalsidechart");
+        
+        const width = +this.sideSvg.attr("width"),
+            height = +this.sideSvg.attr("height");
 
         var path = d3.geoPath();
-        var g = svg.append("g");
+        var g = this.sideSvg.append("g");
         
         var projection = this.projection;
 
-        svg.selectAll("path")
+        this.sideSvg.selectAll("path")
             .data([])
             .exit()
             .remove();
@@ -80,71 +77,42 @@ class GeoVis {
                 .attr("fill", "rgb(240,240,240)")
                 .attr("d", path)
                 .style("stroke", "white");
-
-            // var centroid = d3.geoCentroid(state);
-            // var invertedCentroid = this.projection.invert(centroid);
-            // var bounds = d3.geoBounds(state);
-            // var invertedBounds = bounds.map(d => this.projection.invert(d));
-
-            // console.log(invertedCentroid);
-            // console.log(invertedBounds);
-
-            // svg.selectAll("circle")
-            //     .data(invertedBounds).enter()
-            //     .append("circle")
-            //     .attr("cx", d => this.projection(d)[0])
-            //     .attr("cy", d => this.projection(d)[1])
-            //     .attr("r", "" + this.pointPixelSize + "px")
-            //     .attr("fill", "black");
-
-            // var k = 1;
-
-            // g.transition()
-            //     .duration(750)
-            //     .attr("transform", "translate(" + -width / 2 + "," + -height / 2 + ")scale(" + k + ")translate(" + invertedBounds[0][0] *5 + "," + invertedBounds[0][1] *5 + ")")
-            //     .style("stroke-width", 1.5 / k + "px");
-
-            // var dx = bounds[1][0] - bounds[0][0],
-            //     dy = bounds[1][1] - bounds[0][1],
-            //     x = (bounds[0][0] + bounds[1][0]) / 2,
-            //     y = (bounds[0][1] + bounds[1][1]) / 2,
-            //     scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
-            //     translate = [width / 2 - scale * x, height / 2 - scale * y];
-
-            // g.transition()
-            //      .duration(750)
-            // .call( zoom.transform, d3.zoomIdentity.translate(invertedBounds[0][0] + 200, invertedBounds[0][1]) );
-
-            // // Create interpolators
-            // var interpolateTranslate = d3.interpolate(t0, projection.translate()),
-            // interpolateScale = d3.interpolate(s0, projection.scale());
-
-            // var interpolator = function(t) {
-            //     projection.scale(interpolateScale(t))
-            //         .translate(interpolateTranslate(t));
-            //     svg.attr("d", path);
-            // };
-
-            // d3.transition()
-            //     .duration(750)
-            //     .tween("projection", function() {
-            //     return interpolator;
-            // });
         });
 
         // Get points and counts per state
-        this.points = this.currentData
-            .filter(d => this.stateMapping[d.State] == this.selectedState)
-            .map(d => [
-                parseFloat(parseFloat(d.Start_Lng).toFixed(1)),
-                parseFloat(parseFloat(d.Start_Lat).toFixed(1))
-            ]);
+        var dataForState = this.currentData
+            .filter(d => this.stateMapping[d.State] == this.selectedState);
+        
+        this.points = dataForState.map(d => [
+            parseFloat(parseFloat(d.Start_Lng).toFixed(1)),
+            parseFloat(parseFloat(d.Start_Lat).toFixed(1))
+        ]);
         
         var accidentCount = this.points.length;
         var accidentPercentage = parseFloat(this.points.length) / this.currentData.length * 100;
+        var dataForStateWithSeverity = dataForState.filter(d => d["Severity"] != "");
+        var totalSeverity = dataForStateWithSeverity.map(d => d["Severity"]).reduce((a, b) => a + parseInt(b), 0);
+        var averageSeverity = dataForStateWithSeverity.length > 0 ? totalSeverity / dataForStateWithSeverity.length : 0;
+        
+        var dataForStateWithTemperature = dataForState.filter(d => d["Temperature(F)"] != "");
+        var totalTemperature = dataForStateWithTemperature.map(d => d["Temperature(F)"]).reduce((a, b) => a + parseFloat(b), 0);
+        var averageTemperature = dataForStateWithTemperature.length > 0 ? totalTemperature / dataForStateWithTemperature.length : 0;
 
+        var dataForStateWithHumidity = dataForState.filter(d => d["Humidity(%)"] != "");
+        var totalHumidity = dataForStateWithHumidity.map(d => d["Humidity(%)"]).reduce((a, b) => a + parseFloat(b), 0);
+        var averageHumidity = dataForStateWithHumidity.length > 0 ? totalHumidity / dataForStateWithHumidity.length : 0;
+
+        var dataForStateWithPrecipitation = dataForState.filter(d => d["Precipitation(in)"] != "");
+        var totalPrecipitation = dataForStateWithPrecipitation.map(d => d["Precipitation(in)"]).reduce((a, b) => a + parseFloat(b), 0);
+        var averagePrecipitation = dataForStateWithPrecipitation.length > 0 ? totalPrecipitation / dataForStateWithPrecipitation.length : 0;
+
+        var dataForStateWithWindSpeed = dataForState.filter(d => d["Wind_Speed(mph)"] != "");
+        var totalWindSpeed = dataForStateWithWindSpeed.map(d => d["Wind_Speed(mph)"]).reduce((a, b) => a + parseFloat(b), 0);
+        var averageWindSpeed = dataForStateWithWindSpeed.length > 0 ? totalWindSpeed / dataForStateWithWindSpeed.length : 0;
+
+        // Quantize point coordinates and remove duplicates for performance
         var pointCoordinatesBitmap = {};
-
+        
         this.points = this.points.filter(d => {
             pointCoordinatesBitmap[d[0]] = pointCoordinatesBitmap[d[0]] || {};
 
@@ -156,102 +124,123 @@ class GeoVis {
             }
         });
 
-        // Remove text from svg
-        svg.selectAll("text")
+        // Remove points from this.sideSvg that aren't present
+        this.sideSvg.selectAll("circle")
             .data([])
             .exit()
             .remove();
 
-        var infoTexts = [
-            "Accidents: " + accidentCount,
-            "Accident percentage: " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%",
-        ]
-
-        infoTexts.forEach((infoText, index) => {
-            svg.append("text")
-                .data([infoText])
-                .attr("text-anchor", "start")
-                .attr("x",30)
-                .attr("y", 30 + index * 20)
-                .attr("dy", ".35em")
-                .text(d => d);
-        })
-
-        // Remove points from svg that aren't present
-        svg.selectAll("circle")
-            .data([])
-            .exit()
-            .remove();
-
-        // add circles to svg
-        svg.selectAll("circle")
+        // add circles to this.sideSvg
+        this.sideSvg.selectAll("circle")
             .data(this.points).enter()
             .append("circle")
             .attr("cx", d => this.projection(d)[0])
             .attr("cy", d => this.projection(d)[1])
             .attr("r", "" + this.pointPixelSize + "px")
             .attr("fill", "red");
+
+        // Remove text from this.sideSvg
+        this.sideSvg.selectAll("text")
+            .data([])
+            .exit()
+            .remove();
+
+        var infoTexts = [];
+
+        if (this.selectedState != undefined) {
+            infoTexts = [
+                "State: " + this.selectedState,
+                "Accidents: " + accidentCount,
+                "Accident percentage (with regard to US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%",
+                "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1),
+                "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1),
+                "Average severity: " + averageSeverity.toFixed(1),
+                "Average temperature: " + averageTemperature.toFixed(1) + " °F",
+                "Average humidity: " + averageHumidity.toFixed(1) + "%",
+                "Average precipitation: " + averagePrecipitation.toFixed(2) + " inches",
+                "Average wind speed: " + averageWindSpeed.toFixed(1) + " mph",
+            ]
+        }
+
+        infoTexts.forEach((infoText, index) => {
+            this.sideSvg.append("text")
+                .data([infoText])
+                .attr("text-anchor", "start")
+                .attr("x",15)
+                .attr("y", 15 + index * 18)
+                .attr("dy", ".30em")
+                .attr("font-weight", 650)
+                .text(d => d);
+        })
         
+        var translateBounds = null;
+        var translatePoint = null;
+
+        if (this.points.length > 0) {
+            translatePoint = [this.projection(this.points[0])[0], this.projection(this.points[0])[1]];
+            translateBounds = [[this.projection(this.points[0])[0] - width / 2, this.projection(this.points[0])[1] - height / 2],
+                               [this.projection(this.points[0])[0] + width / 2, this.projection(this.points[0])[1] + height / 2]];
+        } else {
+            translatePoint = [width / 2, height / 2];
+            translateBounds = [[0, 0], [width * 4, height * 4]];
+        }
+
+        // Define zoom behavior for the sideSvg
         var zoom = d3.zoom()
-            .scaleExtent([1, 100])
+            .scaleExtent([1, 25])
+            .translateExtent(translateBounds)
             .on('zoom', event => {
-                svg.selectAll('path')
+                this.sideSvg = d3.select("#geographicalsidechart");
+
+                this.sideSvg.selectAll('path')
                     .attr('transform', event.transform);
                 
-                svg.selectAll('circle')
+                this.sideSvg.selectAll('circle')
                     .attr('transform', event.transform)
                     .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.4)) + "px");
             });
         
-        // Zoom to the first point if present, else go towards the center of the map
+        // Zoom and pan to the first point if present, else go towards the center of the map
         if (this.points.length > 0) {
-            svg.transition()
+            var transformScale = 2;
+            var transformParams = d3.zoomIdentity;
+            transformParams.k = 2;
+            transformParams.x = (transformScale * -translatePoint[0]) + width / 2;
+            transformParams.y = (transformScale * -translatePoint[1]) + height / 2;
+
+            this.sideSvg.transition()
                 .duration(750)
-                .call( zoom.translateTo, + width * 2 + this.points[0][0], height / 2 + this.points[0][1] );
+                .call(zoom.transform, transformParams)
+                //.call( zoom.translateTo, translatePoint[0], translatePoint[1] );
         } else {
-            svg.transition()
+            this.sideSvg.transition()
                 .duration(750)
                 .call( zoom.translateTo, width, height / 2 )
         }
 
-        svg.call(zoom);
+        this.sideSvg.call(zoom);
     }
 
     createGeographicalChart(){
-        const svg = d3.select("#geographicalchart"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+        this.geographicalSvg = d3.select("#geographicalchart");
 
         // The scale and translation are recommended by the albers-10m dataset creators
         this.projection = d3.geoAlbersUsa()
             .scale(1300)
-            .translate([487.5, 305])
-
-        var path = d3.geoPath();
-        var g = svg.append("g");
-
-        // var geoVis = this;
-        // var samplePoints = [[-80, 30]];
-        // add circles to svg
-        // svg.selectAll("circle")
-        //     .data(samplePoints).enter()
-        //     .append("circle")
-        //     .attr("cx", d => this.projection(d)[0])
-        //     .attr("cy", d => this.projection(d)[1])
-        //     .attr("r", "" + this.pointPixelSize + "px")
-        //     .attr("fill", "black");
+            .translate([487.5, 305]);
 
         this.updateGeographicalChart();
     }
 
 
     updateGeographicalChart(){
-        const svg = d3.select("#geographicalchart"),
-            width = +svg.attr("width"),
-            height = +svg.attr("height");
+        this.geographicalSvg = d3.select("#geographicalchart");
+        
+        const width = +this.geographicalSvg.attr("width"),
+            height = +this.geographicalSvg.attr("height");
 
         var path = d3.geoPath();
-        var g = svg.append("g");
+        var g = this.geographicalSvg.append("g");
 
         // Get points and counts per state
         this.points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
@@ -259,7 +248,7 @@ class GeoVis {
         this.statesData.forEach(stateData => this.stateCounts[stateData.label] = 0);
         this.currentData.forEach(row => this.stateCounts[this.stateMapping[row.State]] += 1);
         
-        // Calculate stats
+        // Calculate global stats
         this.stateCountStats = {
             'min': 0,
             'max': 0,
@@ -279,14 +268,17 @@ class GeoVis {
 
         this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(this.stateCounts).length
 
+        // Create color scale for heatmap.
+        // Min is slightly below zero to color states without accidents lightblue.
+        // The max darkness is for the state with the highest number of accidents.
         var colorScale = d3.scaleLinear()
             .domain([-0.000001,this.stateCountStats.max])
             .range(["lightblue", "darkblue"]);
 
         var stateCounts = this.stateCounts;
 
-        // Remove all states
-        svg.selectAll("path")
+        // Remove all outdated states
+        this.geographicalSvg.selectAll("path")
             .data([])
             .exit()
             .remove();
@@ -306,8 +298,8 @@ class GeoVis {
                 });
         });
         
-        // Add gradient object
-        var colorScaleGradient = svg.append('defs')
+        // Add gradient objects with gradient CSS (to be used for the legend)
+        var colorScaleGradient = this.geographicalSvg.append('defs')
             .append('linearGradient')
             .attr('id', 'colorScaleGradient')
             .attr('x1', '0%')
@@ -324,18 +316,20 @@ class GeoVis {
                 return index * 100 + '%';
             })
 
-        svg.selectAll('rect')
+        // Remove outdated legend
+        this.geographicalSvg.selectAll('rect')
             .data([])
             .exit()
             .remove();
         
-        svg.selectAll('text')
+        // Remove outdated legend min and max value texts
+        this.geographicalSvg.selectAll('text')
             .data([])
             .exit()
             .remove();
         
-        // Add legend and min max text
-        svg.append("rect")
+        // Add legend and min max value texts
+        this.geographicalSvg.append("rect")
             .attr("class", "legendRect")
             .attr("x", width - width / 4)
             .attr("y", 10)
@@ -345,7 +339,7 @@ class GeoVis {
             .style("stroke", "black")
             .style("stroke-width", "0.5px");
 
-        svg.append("text")
+        this.geographicalSvg.append("text")
             .data([0])
             .attr("text-anchor", "start")
             .attr("x", width - width / 4)
@@ -353,7 +347,7 @@ class GeoVis {
             .attr("dy", ".35em")
             .text(d => d);
 
-        svg.append("text")
+        this.geographicalSvg.append("text")
             .data([this.stateCountStats.max])
             .attr("text-anchor", "end")
             .attr("x", width)
@@ -361,32 +355,20 @@ class GeoVis {
             .attr("dy", ".35em")
             .text(d => d);
 
-        // // Remove points from svg that aren't present
-        // svg.selectAll("circle")
-        //     .data(this.points)
-        //     .exit()
-        //     .remove();
-
-        // // add circles to svg
-        // svg.selectAll("circle")
-        //     .data(this.points).enter()
-        //     .append("circle")
-        //     .attr("cx", d => this.projection(d)[0])
-        //     .attr("cy", d => this.projection(d)[1])
-        //     .attr("r", "" + this.pointPixelSize + "px")
-        //     .attr("fill", "red");
-
+        // Define zoom behavior for the geographicalSvg
         var zoom = d3.zoom()
             .scaleExtent([1, 100])
             .on('zoom', event => {
-                svg.selectAll('path')
+                this.geographicalSvg = d3.select("#geographicalchart");
+
+                this.geographicalSvg.selectAll('path')
                     .attr('transform', event.transform);
                 
-                svg.selectAll('circle')
+                this.geographicalSvg.selectAll('circle')
                     .attr('transform', event.transform)
                     .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.8)) + "px");
             });
 
-        svg.call(zoom);
+        this.geographicalSvg.call(zoom);
     }
 }
