@@ -58,8 +58,8 @@ class BasicVis {
 
   createPieChart() {
     // set the dimensions and margins of the graph
-    const width = 300,
-    height = 300,
+    const width = 250,
+    height = 250,
     margin = 40;
 
     // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
@@ -73,6 +73,31 @@ class BasicVis {
     .append("g")
     .attr("transform", `translate(${width/2}, ${height/2})`);
 
+    const legend = d3.select("#severitychart")
+    .append("svg")
+    .attr("width", 300)
+    .attr("height", 50)
+
+    legend
+    .append("circle").attr("cx",60).attr("cy",25).attr("r", 6).style("fill", "#FF8A8A")
+    legend
+    .append("text").attr("x", 70).attr("y", 27).text("1").style("font-size", "10px").attr("alignment-baseline","middle")
+    
+    legend
+    .append("circle").attr("cx",120).attr("cy",25).attr("r", 6).style("fill", "#FF2E2E")
+    legend
+    .append("text").attr("x", 130).attr("y", 27).text("2").style("font-size", "10px").attr("alignment-baseline","middle")
+  
+    legend
+    .append("circle").attr("cx",180).attr("cy",25).attr("r", 6).style("fill", "#D10000")
+    legend
+    .append("text").attr("x", 190).attr("y", 27).text("3").style("font-size", "10px").attr("alignment-baseline","middle")
+    
+    legend
+    .append("circle").attr("cx",240).attr("cy",25).attr("r", 6).style("fill", "#750000")
+    legend
+    .append("text").attr("x", 250).attr("y", 27).text("4").style("font-size", "10px").attr("alignment-baseline","middle")
+    
     this.updatePieChart(svg)
   }
 
@@ -94,7 +119,7 @@ class BasicVis {
 
     // set the color scale
     const color = d3.scaleOrdinal()
-    .range(["#ff7b7b", "#ff5252", "#ff0000", "#a70000"])
+    .range(["#FF8A8A", "#FF2E2E", "#D10000", "#750000"])
 
     // Compute the position of each group on the pie:
     const pie = d3.pie()
@@ -102,12 +127,10 @@ class BasicVis {
     .sort(function(a, b) { return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
     const data_ready = pie(Object.entries(data))
 
-    // map to data
-    const u = svg.selectAll("path")
-      .data(data_ready)
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    u
+    svg.selectAll("path")
+      .data(data_ready)
       .join('path')
       .transition()
       .duration(1000)
@@ -119,6 +142,19 @@ class BasicVis {
       .attr("stroke", "white")
       .style("stroke-width", "2px")
       .style("opacity", 1)
+
+    svg
+      .selectAll('text')
+      .data(data_ready)
+      .join('text')
+      .transition()
+      .duration(1000)
+      .text(function(d){ if (d.data[1] > 0 ) return d.data[1] ; else return ""})
+      .attr("transform", function(d) { return `translate(${d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius).centroid(d)})`})
+      .style("text-anchor", "middle")
+      .style("font-size", 10)
   }
 
   createBarChart() {
@@ -383,8 +419,19 @@ class BasicVis {
           "translate(" + margin.left + "," + margin.top + ")");
 
     // create dummy data
-    var data = this.currentData.map(d => parseFloat(d['Start_Lng']))
-    
+    var data = this.currentData.map(d => parseInt(d['Start_Lng']))
+
+    var min = data[0]
+    var max = data[0]
+    for (var i = 1; i < data.length; ++i) {
+      if (data[i] < min) {
+        min = data[i]
+      }
+      if (data[i] > max) {
+        max = data[i]
+      }
+    } 
+
     // Compute summary statistics used for the box:
     var data_sorted = data.sort(d3.ascending)
     var q1 = d3.quantile(data_sorted, .25)
@@ -396,7 +443,7 @@ class BasicVis {
 
     // Show the Y scale
     var y = d3.scaleLinear()
-    .domain([-200,0])
+    .domain([min,max])
     .range([height, 0]);
     svg.call(d3.axisLeft(y))
 
