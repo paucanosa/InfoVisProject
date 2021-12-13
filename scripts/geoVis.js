@@ -88,6 +88,7 @@ class GeoVis {
             parseFloat(parseFloat(d.Start_Lat).toFixed(1))
         ]);
         
+        // Calculate data for info text
         var accidentCount = this.points.length;
         var accidentPercentage = parseFloat(this.points.length) / this.currentData.length * 100;
         var dataForStateWithSeverity = dataForState.filter(d => d["Severity"] != "");
@@ -145,6 +146,7 @@ class GeoVis {
             .exit()
             .remove();
 
+        // Render current info text
         var infoTexts = [];
 
         if (this.selectedState != undefined) {
@@ -173,16 +175,20 @@ class GeoVis {
                 .text(d => d);
         })
         
+        // Calculate numbers for pan location and translation boundaries
+        var translateLongLat = null;
         var translateBounds = null;
         var translatePoint = null;
 
-        if (this.points.length > 0) {
-            translatePoint = [this.projection(this.points[0])[0], this.projection(this.points[0])[1]];
-            translateBounds = [[this.projection(this.points[0])[0] - width / 2, this.projection(this.points[0])[1] - height / 2],
-                               [this.projection(this.points[0])[0] + width / 2, this.projection(this.points[0])[1] + height / 2]];
+        if (this.selectedState != undefined) {
+            var stateData = this.statesData.filter(d => d.label == this.selectedState)[0];
+
+            translateLongLat = [stateData.longitude, stateData.latitude];
+            translatePoint = [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25];
+            translateBounds = [[this.projection(translateLongLat)[0] - width / 2, this.projection(translateLongLat)[1] - height / 2],
+                               [this.projection(translateLongLat)[0] + width / 2, this.projection(translateLongLat)[1] + height / 2]];
         } else {
-            translatePoint = [width / 2, height / 2];
-            translateBounds = [[0, 0], [width * 4, height * 4]];
+            translateBounds = [[-width, -height], [width * 2, height * 2]];
         }
 
         // Define zoom behavior for the sideSvg
@@ -201,10 +207,10 @@ class GeoVis {
             });
         
         // Zoom and pan to the first point if present, else go towards the center of the map
-        if (this.points.length > 0) {
+        if (translatePoint != undefined) {
             var transformScale = 2;
             var transformParams = d3.zoomIdentity;
-            transformParams.k = 2;
+            transformParams.k = transformScale;
             transformParams.x = (transformScale * -translatePoint[0]) + width / 2;
             transformParams.y = (transformScale * -translatePoint[1]) + height / 2;
 
@@ -213,9 +219,15 @@ class GeoVis {
                 .call(zoom.transform, transformParams)
                 //.call( zoom.translateTo, translatePoint[0], translatePoint[1] );
         } else {
+            var transformScale = 1;
+            var transformParams = d3.zoomIdentity;
+            transformParams.k = transformScale;
+            transformParams.x = width / 2;
+            transformParams.y = height / 2;
+
             this.sideSvg.transition()
                 .duration(750)
-                .call( zoom.translateTo, width, height / 2 )
+                .call(zoom.transform, transformParams)
         }
 
         this.sideSvg.call(zoom);
@@ -357,7 +369,7 @@ class GeoVis {
 
         // Define zoom behavior for the geographicalSvg
         var zoom = d3.zoom()
-            .scaleExtent([1, 100])
+            .scaleExtent([1, 25])
             .on('zoom', event => {
                 this.geographicalSvg = d3.select("#geographicalchart");
 
