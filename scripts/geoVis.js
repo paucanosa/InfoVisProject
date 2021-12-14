@@ -60,23 +60,25 @@ class GeoVis {
         // Add states with updated colors
         d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
             var state = null;
+            
+            if (this.selectedState != undefined) {
+                g.attr("class", "states")
+                    .selectAll("path")
+                    .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name == this.selectedState))
+                    .enter().append("path")
+                    .attr("fill", "lightblue")
+                    .attr("id", d => {state = d; return d})
+                    .attr("d", path)
+                    .style("stroke", "grey");
 
-            g.attr("class", "states")
-                .selectAll("path")
-                .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name == this.selectedState))
-                .enter().append("path")
-                .attr("fill", "lightblue")
-                .attr("id", d => {state = d; return d})
-                .attr("d", path)
-                .style("stroke", "grey");
-
-            g.attr("class", "states")
-                .selectAll("path")
-                .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name != this.selectedState))
-                .enter().append("path")
-                .attr("fill", "rgb(240,240,240)")
-                .attr("d", path)
-                .style("stroke", "white");
+                g.attr("class", "states")
+                    .selectAll("path")
+                    .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name != this.selectedState))
+                    .enter().append("path")
+                    .attr("fill", "rgb(240,240,240)")
+                    .attr("d", path)
+                    .style("stroke", "white");
+            }
         });
 
         // Get points and counts per state
