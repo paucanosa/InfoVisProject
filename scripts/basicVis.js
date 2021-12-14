@@ -28,7 +28,7 @@ class BasicVis {
     this.widthHistogram =
       700 - this.marginHistogram.left - this.marginHistogram.right;
     this.heightHistogram =
-    275 - this.marginHistogram.top - this.marginHistogram.bottom;
+      275 - this.marginHistogram.top - this.marginHistogram.bottom;
 
     //Boxplot data
     this.xBoxplot = null;
@@ -59,102 +59,167 @@ class BasicVis {
   createPieChart() {
     // set the dimensions and margins of the graph
     const width = 250,
-    height = 250,
-    margin = 40;
+      height = 250,
+      margin = 40;
 
     // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
     const radius = Math.min(width, height) / 2 - margin;
 
     // append the svg object to the div called 'my_dataviz'
-    const svg = d3.select("#severitychart")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width/2}, ${height/2})`);
+    const svg = d3
+      .select("#severitychart")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    const legend = d3.select("#severitychart")
-    .append("svg")
-    .attr("width", 300)
-    .attr("height", 50)
+    const legend = d3
+      .select("#severitychart")
+      .append("svg")
+      .attr("width", 300)
+      .attr("height", 50);
 
     legend
-    .append("circle").attr("cx",60).attr("cy",25).attr("r", 6).style("fill", "#FF8A8A")
+      .append("circle")
+      .attr("cx", 60)
+      .attr("cy", 25)
+      .attr("r", 6)
+      .style("fill", "#FF8A8A");
     legend
-    .append("text").attr("x", 70).attr("y", 27).text("1").style("font-size", "10px").attr("alignment-baseline","middle")
-    
+      .append("text")
+      .attr("x", 70)
+      .attr("y", 27)
+      .text("1")
+      .style("font-size", "10px")
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
+      .attr("alignment-baseline", "middle");
+
     legend
-    .append("circle").attr("cx",120).attr("cy",25).attr("r", 6).style("fill", "#FF2E2E")
+      .append("circle")
+      .attr("cx", 120)
+      .attr("cy", 25)
+      .attr("r", 6)
+      .style("fill", "#FF2E2E");
     legend
-    .append("text").attr("x", 130).attr("y", 27).text("2").style("font-size", "10px").attr("alignment-baseline","middle")
-  
+      .append("text")
+      .attr("x", 130)
+      .attr("y", 27)
+      .text("2")
+      .style("font-size", "10px")
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
+      .attr("alignment-baseline", "middle");
+
     legend
-    .append("circle").attr("cx",180).attr("cy",25).attr("r", 6).style("fill", "#D10000")
+      .append("circle")
+      .attr("cx", 180)
+      .attr("cy", 25)
+      .attr("r", 6)
+      .style("fill", "#D10000");
     legend
-    .append("text").attr("x", 190).attr("y", 27).text("3").style("font-size", "10px").attr("alignment-baseline","middle")
-    
+      .append("text")
+      .attr("x", 190)
+      .attr("y", 27)
+      .text("3")
+      .style("font-size", "10px")
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
+      .attr("alignment-baseline", "middle");
+
     legend
-    .append("circle").attr("cx",240).attr("cy",25).attr("r", 6).style("fill", "#750000")
+      .append("circle")
+      .attr("cx", 240)
+      .attr("cy", 25)
+      .attr("r", 6)
+      .style("fill", "#750000");
     legend
-    .append("text").attr("x", 250).attr("y", 27).text("4").style("font-size", "10px").attr("alignment-baseline","middle")
-    
-    this.updatePieChart(svg)
+      .append("text")
+      .attr("x", 250)
+      .attr("y", 27)
+      .text("4")
+      .style("font-size", "10px")
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
+      .attr("alignment-baseline", "middle");
+
+    this.updatePieChart(svg);
   }
 
   updatePieChart(svg) {
     // set the dimensions and margins of the graph
     const width = 300,
-    height = 300,
-    margin = 40;
+      height = 300,
+      margin = 40;
 
     // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
     const radius = Math.min(width, height) / 2 - margin;
 
     if (!svg) var svg = d3.select("#severitychart").select("svg");
 
-    const data = {1: this.currentData.filter(function (d) {return d["Severity"] == 1;}).length,
-                  2: this.currentData.filter(function (d) {return d["Severity"] == 2;}).length,
-                  3: this.currentData.filter(function (d) {return d["Severity"] == 3;}).length,
-                  4: this.currentData.filter(function (d) {return d["Severity"] == 4;}).length}
+    const data = {
+      1: this.currentData.filter(function (d) {
+        return d["Severity"] == 1;
+      }).length,
+      2: this.currentData.filter(function (d) {
+        return d["Severity"] == 2;
+      }).length,
+      3: this.currentData.filter(function (d) {
+        return d["Severity"] == 3;
+      }).length,
+      4: this.currentData.filter(function (d) {
+        return d["Severity"] == 4;
+      }).length,
+    };
 
     // set the color scale
-    const color = d3.scaleOrdinal()
-    .range(["#FF8A8A", "#FF2E2E", "#D10000", "#750000"])
+    const color = d3
+      .scaleOrdinal()
+      .range(["#FF8A8A", "#FF2E2E", "#D10000", "#750000"]);
 
     // Compute the position of each group on the pie:
-    const pie = d3.pie()
-    .value(function(d) {return d[1]; })
-    .sort(function(a, b) { return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
-    const data_ready = pie(Object.entries(data))
-
+    const pie = d3
+      .pie()
+      .value(function (d) {
+        return d[1];
+      })
+      .sort(function (a, b) {
+        return d3.ascending(a.key, b.key);
+      }); // This make sure that group order remains the same in the pie chart
+    const data_ready = pie(Object.entries(data));
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    svg.selectAll("path")
+    svg
+      .selectAll("path")
       .data(data_ready)
-      .join('path')
+      .join("path")
       .transition()
       .duration(1000)
-      .attr('d', d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius)
-      )
-      .attr('fill', function(d){ return(color(d.data[0])) })
+      .attr("d", d3.arc().innerRadius(0).outerRadius(radius))
+      .attr("fill", function (d) {
+        return color(d.data[0]);
+      })
       .attr("stroke", "white")
       .style("stroke-width", "2px")
-      .style("opacity", 1)
+      .style("opacity", 1);
 
     svg
-      .selectAll('text')
+      .selectAll("text")
       .data(data_ready)
-      .join('text')
+      .join("text")
       .transition()
       .duration(1000)
-      .text(function(d){ if (d.data[1] > 0 ) return d.data[1] ; else return ""})
-      .attr("transform", function(d) { return `translate(${d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius).centroid(d)})`})
+      .text(function (d) {
+        if (d.data[1] > 0) return d.data[1];
+        else return "";
+      })
+      .attr("transform", function (d) {
+        return `translate(${d3
+          .arc()
+          .innerRadius(0)
+          .outerRadius(radius)
+          .centroid(d)})`;
+      })
       .style("text-anchor", "middle")
-      .style("font-size", 10)
+      .style("font-size", '12px')
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
   }
 
   createBarChart() {
@@ -290,7 +355,7 @@ class BasicVis {
     //this.updateBarChart();
     this.updateHistogramChart();
     this.updatePieChart();
-    this.updateBoxPlot()
+    this.updateBoxPlot();
   }
 
   createHistogramChart() {
@@ -405,86 +470,88 @@ class BasicVis {
 
   createBoxPlot() {
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = 400 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    var margin = { top: 10, right: 30, bottom: 30, left: 40 },
+      width = 400 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
-    var svg = d3.select("#durationchart")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3
+      .select("#durationchart")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // create dummy data
-    var data = this.currentData.map(d => parseInt(d['Start_Lng']))
+    var data = this.currentData.map((d) => parseInt(d["Start_Lng"]));
 
-    var min = data[0]
-    var max = data[0]
+    var min = data[0];
+    var max = data[0];
     for (var i = 1; i < data.length; ++i) {
       if (data[i] < min) {
-        min = data[i]
+        min = data[i];
       }
       if (data[i] > max) {
-        max = data[i]
+        max = data[i];
       }
-    } 
+    }
 
     // Compute summary statistics used for the box:
-    var data_sorted = data.sort(d3.ascending)
-    var q1 = d3.quantile(data_sorted, .25)
-    var median = d3.quantile(data_sorted, .5)
-    var q3 = d3.quantile(data_sorted, .75)
-    var interQuantileRange = q3 - q1
-    var min = q1 - 1.5 * interQuantileRange
-    var max = q1 + 1.5 * interQuantileRange
+    var data_sorted = data.sort(d3.ascending);
+    var q1 = d3.quantile(data_sorted, 0.25);
+    var median = d3.quantile(data_sorted, 0.5);
+    var q3 = d3.quantile(data_sorted, 0.75);
+    var interQuantileRange = q3 - q1;
+    var min = q1 - 1.5 * interQuantileRange;
+    var max = q1 + 1.5 * interQuantileRange;
 
     // Show the Y scale
-    var y = d3.scaleLinear()
-    .domain([min,max])
-    .range([height, 0]);
-    svg.call(d3.axisLeft(y))
+    var y = d3.scaleLinear().domain([min, max]).range([height, 0]);
+    svg.call(d3.axisLeft(y));
 
     // a few features for the box
-    var center = 200
-    var width = 100
+    var center = 200;
+    var width = 100;
 
     // Show the main vertical line
     svg
-    .append("line")
-    .attr("x1", center)
-    .attr("x2", center)
-    .attr("y1", y(min) )
-    .attr("y2", y(max) )
-    .attr("stroke", "black")
+      .append("line")
+      .attr("x1", center)
+      .attr("x2", center)
+      .attr("y1", y(min))
+      .attr("y2", y(max))
+      .attr("stroke", "black");
 
     // Show the box
     svg
-    .append("rect")
-    .attr("x", center - width/2)
-    .attr("y", y(q3) )
-    .attr("height", (y(q1)-y(q3)) )
-    .attr("width", width )
-    .attr("stroke", "black")
-    .style("fill", "#69b3a2")
+      .append("rect")
+      .attr("x", center - width / 2)
+      .attr("y", y(q3))
+      .attr("height", y(q1) - y(q3))
+      .attr("width", width)
+      .attr("stroke", "black")
+      .style("fill", "#69b3a2");
 
     // show median, min and max horizontal lines
     svg
-    .selectAll("toto")
-    .data([min, median, max])
-    .enter()
-    .append("line")
-    .attr("x1", center-width/2)
-    .attr("x2", center+width/2)
-    .attr("y1", function(d){ return(y(d))} )
-    .attr("y2", function(d){ return(y(d))} )
-    .attr("stroke", "black")
+      .selectAll("toto")
+      .data([min, median, max])
+      .enter()
+      .append("line")
+      .attr("x1", center - width / 2)
+      .attr("x2", center + width / 2)
+      .attr("y1", function (d) {
+        return y(d);
+      })
+      .attr("y2", function (d) {
+        return y(d);
+      })
+      .attr("stroke", "black");
   }
 
   updateBoxPlot() {
-    d3.select('#durationchart').select('svg').remove()
-    this.createBoxPlot()
+    d3.select("#durationchart").select("svg").remove();
+    this.createBoxPlot();
   }
 }

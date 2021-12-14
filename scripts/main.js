@@ -489,6 +489,10 @@ function updateData() {
   basicVis.updateData(currentData);
 }
 
+function generateTimeProgress(){
+  // TODO?
+}
+
 function changeFilterAccordion() {
   const node = document.getElementById("filteraccordionicon");
   const parentNode = document.getElementById("mainfilters");

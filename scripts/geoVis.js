@@ -156,11 +156,11 @@ class GeoVis {
                 "Accident percentage (with regard to US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%",
                 "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1),
                 "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1),
-                "Average severity: " + averageSeverity.toFixed(1),
-                "Average temperature: " + averageTemperature.toFixed(1) + " °F",
-                "Average humidity: " + averageHumidity.toFixed(1) + "%",
-                "Average precipitation: " + averagePrecipitation.toFixed(2) + " inches",
-                "Average wind speed: " + averageWindSpeed.toFixed(1) + " mph",
+                "Avg. Severity : " + averageSeverity.toFixed(1),
+                "Avg. T° : " + averageTemperature.toFixed(1) + " °F",
+                "Avg. Humidity : " + averageHumidity.toFixed(1) + "%",
+                "Avg. precipitation: " + averagePrecipitation.toFixed(2) + " inches",
+                "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph",
             ]
         }
 
@@ -171,7 +171,8 @@ class GeoVis {
                 .attr("x",15)
                 .attr("y", 15 + index * 18)
                 .attr("dy", ".30em")
-                .attr("font-weight", 650)
+                .attr("font-size","14px")
+                .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
                 .text(d => d);
         })
         

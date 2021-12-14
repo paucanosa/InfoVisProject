@@ -192,11 +192,26 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-left: 20px;
 }
+.geographical-visualization-container{
+  border: solid 2px lightgray;
+  border-radius: 3px;
+  width: calc(100% - 40px);
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: flex;
+}
 
 .c-chart {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.geo-map-separator{
+  min-height: 100%;
+border-right: solid 2px lightgray;
+width: 10px;
 }
 
 .separator {
