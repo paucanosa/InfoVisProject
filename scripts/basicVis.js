@@ -190,8 +190,6 @@ class BasicVis {
       .selectAll("path")
       .data(data_ready)
       .join("path")
-      .transition()
-      .duration(1000)
       .attr("d", d3.arc().innerRadius(0).outerRadius(radius))
       .attr("fill", function (d) {
         return color(d.data[0]);
@@ -204,8 +202,6 @@ class BasicVis {
       .selectAll("text")
       .data(data_ready)
       .join("text")
-      .transition()
-      .duration(1000)
       .text(function (d) {
         if (d.data[1] > 0) return d.data[1];
         else return "";
@@ -300,8 +296,6 @@ class BasicVis {
       }),
     ]);
     this.yAxisBarChart
-      .transition()
-      .duration(1000)
       .call(d3.axisLeft(this.yBarChart));
 
     if (!svg) var svg = d3.select("#severitychart").select("svg");
@@ -315,8 +309,6 @@ class BasicVis {
     u.enter()
       .append("rect")
       .merge(u)
-      .transition()
-      .duration(1000)
       .attr("x", function (d) {
         return xBarChart(d.severity);
       })
@@ -435,8 +427,6 @@ class BasicVis {
 
     //Axis data updated
     this.yAxisHistogram
-      .transition()
-      .duration(1000)
       .call(d3.axisLeft(this.yHistogram));
     this.xAxisHistogram.call(d3.axisBottom(this.xHistogram));
 
@@ -448,8 +438,6 @@ class BasicVis {
     u.enter()
       .append("rect")
       .merge(u)
-      .transition()
-      .duration(1000)
       .attr("class", "bar")
       .attr("x", 1)
       .attr("transform", function (d) {

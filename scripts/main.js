@@ -259,7 +259,7 @@ var mySlider = new rSlider({
     "Dec",
   ],
   range: true,
-  width: "1350px",
+  width: "1250px",
   tooltip: false,
   scale: true,
   labels: true,
@@ -489,9 +489,25 @@ function updateData() {
   basicVis.updateData(currentData);
 }
 
-function generateTimeProgress(){
-  // TODO?
+async function time(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+async function generateTimeProgress(){
+  var parseDate = d3.timeParse("%Y-%m-%d");
+  var currentDay = new Date(activeFilters.time.start+" 1, 2019")
+  var dataBeforeProgress = currentData;
+  var newData = currentData
+  while(currentDay.getMonth() < (monthMap[activeFilters.time.end])){
+    newData = dataBeforeProgress.filter(function (row) {
+      var date = new Date(parseDate(row["Start_Time"].slice(0,10)));
+      return date.getTime()<=currentDay.getTime();
+    });
+    currentData = newData;
+    updateData();
+    await time(50);
+    currentDay.setDate(currentDay.getDate()+1);
+  }
 }
+
 
 function changeFilterAccordion() {
   const node = document.getElementById("filteraccordionicon");

@@ -394,22 +394,24 @@
     </div>
     <div class="main-slider-container">
       <p class="chart-title">Time selector</p>
-      <div class="main-slider-item">
-        <input type="text" id="sampleSlider"/>
+      <div class="u-flex-row">
+        <div class="main-slider-item">
+          <input type="text" id="sampleSlider"/>
+        </div>
+          <button class="filters-apply-button button-visualization" onclick="generateTimeProgress()" title="Accept requested meeting.">
+            Run animation
+          </button>
+          <p class="info-icon">
+            ⓘ
+            <span class="tooltiptext">Visualization performs better with filtered data</span>
+          </p>
       </div>
-      <!-- <div class="filters-apply-button-container">
-        <button class="filters-apply-button" onclick="generateTimeProgress()">
-          Go
-        </button>
-      </div> -->
     </div>
     <div class="geographical-visualization-container">
       <svg id="geographicalchart" width="1000" height="600"></svg>
       <div class="geo-map-separator"></div>
       <svg id="geographicalsidechart" width="400" height="600"></svg>
     </div>
-
-    <div id="chart" class="c-chart"></div>
     <!-- <script type="module" src="scripts/logicData.js"></script> -->
     <script src="scripts/basicVis.js"></script>
     <script src="scripts/geoVis.js"></script>
