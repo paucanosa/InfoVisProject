@@ -473,16 +473,16 @@ class BasicVis {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // create dummy data
-    var data = this.currentData.map((d) => parseInt(d["Start_Lng"]));
+    var data = this.currentData.map((d) => parseFloat(d["Duration"]));
 
-    var min = data[0];
-    var max = data[0];
+    var minimum = data[0];
+    var maximum = data[0];
     for (var i = 1; i < data.length; ++i) {
-      if (data[i] < min) {
-        min = data[i];
+      if (data[i] < minimum) {
+        minimum = data[i];
       }
-      if (data[i] > max) {
-        max = data[i];
+      if (data[i] > maximum) {
+        maximum = data[i];
       }
     }
 
@@ -559,10 +559,10 @@ class BasicVis {
       .text("q3: " + q3)
     tooltip
       .append("div")
-      .text("min: " + min)
+      .text("min: " + minimum)
     tooltip
       .append("div")
-      .text("max: " + max)
+      .text("max: " + maximum)
 
     var boxplot_box = document.getElementById("boxplot_box").getBoundingClientRect()
     var right = boxplot_box.right + 15
