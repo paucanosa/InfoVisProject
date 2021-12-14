@@ -515,6 +515,7 @@ class BasicVis {
     // Show the box
     svg
       .append("rect")
+      .attr("id", "boxplot_box")
       .attr("x", center - width / 2)
       .attr("y", y(q3))
       .attr("height", y(q1) - y(q3))
@@ -537,6 +538,40 @@ class BasicVis {
         return y(d);
       })
       .attr("stroke", "black");
+
+    var tooltip = d3.select("#durationchart")
+      .append("div")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background", "black")
+        .style("padding", "15px")
+        .style("border-radius", "5px")
+        .style("color", "white")
+    
+    tooltip
+      .append("div")
+      .text("median: " + median)
+    tooltip
+      .append("div")
+      .text("q1: " + q1)
+    tooltip
+      .append("div")
+      .text("q3: " + q3)
+    tooltip
+      .append("div")
+      .text("min: " + min)
+    tooltip
+      .append("div")
+      .text("max: " + max)
+
+    var boxplot_box = document.getElementById("boxplot_box").getBoundingClientRect()
+    var right = boxplot_box.right + 15
+    var top = boxplot_box.top
+
+    d3.select("#boxplot_box")
+      .on("mouseover", function(){return tooltip.style("visibility", "visible");})
+      .on("mousemove", function(){return tooltip.style("top", top + "px").style("left",right + "px");})
+      .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
   }
 
   updateBoxPlot() {
