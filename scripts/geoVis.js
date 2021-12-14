@@ -19,7 +19,7 @@ class GeoVis {
         this.createSideChart();
 
         this.geographicalSvg = d3.select("#geographicalchart");
-        this.sideSvg = null;
+        this.sideSvg = d3.select("#geographicalsidechart");
     }
 
     updateData(filteredData){
@@ -42,8 +42,6 @@ class GeoVis {
     }
 
     updateSideChart(){
-        this.sideSvg = d3.select("#geographicalsidechart");
-        
         const width = +this.sideSvg.attr("width"),
             height = +this.sideSvg.attr("height");
 
@@ -51,30 +49,26 @@ class GeoVis {
         var g = this.sideSvg.append("g");
         
         var projection = this.projection;
-
-        this.sideSvg.selectAll("path")
-            .data([])
-            .exit()
-            .remove();
+        var sideSvg = this.sideSvg;
 
         // Add states with updated colors
         d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
             if (this.selectedState != undefined) {
-                g.attr("class", "states")
+                var states = sideSvg
                     .selectAll("path")
-                    .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name == this.selectedState))
-                    .enter().append("path")
-                    .attr("fill", "lightblue")
-                    .attr("d", path)
-                    .style("stroke", "grey");
+                    .data(topojson.feature(us, us.objects.states).features, d => {return d.properties.name});
+                
+                states.join(
+                    enter => { 
+                        return enter.append("path")
+                            .attr("fill", d => d.properties.name == this.selectedState ? "lightblue" : "rgb(240,240,240)")
+                            .attr("d", path)
+                            .style("stroke", d => d.properties.name == this.selectedState ? "grey" : "white");
+                    },
+                    update =>{return update;},
+                    exit => {return exit.remove();}
+                );
 
-                g.attr("class", "states")
-                    .selectAll("path")
-                    .data(topojson.feature(us, us.objects.states).features.filter(d => d.properties.name != this.selectedState))
-                    .enter().append("path")
-                    .attr("fill", "rgb(240,240,240)")
-                    .attr("d", path)
-                    .style("stroke", "white");
             }
         });
 
@@ -298,15 +292,16 @@ class GeoVis {
 
             // console.log("\n\n Everything is loaded \n\n")
             states.join(
-                enter => enter.append("path").merge(states)
-                    // .attr("id", d => "geographicalchart-path-" + d.properties.name)
-                    .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
-                    .attr("d", path)
-                    .style("stroke", "white")
-                    .on('click', event => {
-                        this.selectedState = event.target.__data__.properties.name;
-                        this.updateSideChart();
-                    }),
+                enter => { 
+                    return enter.append("path").merge(states)
+                        .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
+                        .attr("d", path)
+                        .style("stroke", "white")
+                        .on('click', event => {
+                            this.selectedState = event.target.__data__.properties.name;
+                            this.updateSideChart();
+                        })
+                },
                 update =>{return update;},
                 exit => {return exit.remove();}
             );
@@ -394,20 +389,20 @@ class GeoVis {
             .text(d => d);
         
         // Define zoom behavior for the geographicalSvg
-        var zoom = d3.zoom()
-            .scaleExtent([1, 25])
-            .on('zoom', event => {
-                this.geographicalSvg = d3.select("#geographicalchart");
+        // var zoom = d3.zoom()
+        //     .scaleExtent([1, 25])
+        //     .on('zoom', event => {
+        //         this.geographicalSvg = d3.select("#geographicalchart");
 
-                this.geographicalSvg.selectAll('path')
-                    .attr('transform', event.transform);
+        //         this.geographicalSvg.selectAll('path')
+        //             .attr('transform', event.transform);
                 
-                this.geographicalSvg.selectAll('circle')
-                    .attr('transform', event.transform)
-                    .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.8)) + "px");
-            });
+        //         this.geographicalSvg.selectAll('circle')
+        //             .attr('transform', event.transform)
+        //             .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.8)) + "px");
+        //     });
 
-        this.geographicalSvg.call(zoom);
+        // this.geographicalSvg.call(zoom);
 
     }
 }
