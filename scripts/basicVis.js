@@ -85,7 +85,7 @@ class BasicVis {
       .attr("cx", 60)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#FF8A8A");
+      .style("fill", "#FFFF00");
     legend
       .append("text")
       .attr("x", 70)
@@ -100,7 +100,7 @@ class BasicVis {
       .attr("cx", 120)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#FF2E2E");
+      .style("fill", "#FFA500");
     legend
       .append("text")
       .attr("x", 130)
@@ -115,7 +115,7 @@ class BasicVis {
       .attr("cx", 180)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#D10000");
+      .style("fill", "#FF0000");
     legend
       .append("text")
       .attr("x", 190)
@@ -130,7 +130,7 @@ class BasicVis {
       .attr("cx", 240)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#750000");
+      .style("fill", "#000000");
     legend
       .append("text")
       .attr("x", 250)
@@ -172,7 +172,7 @@ class BasicVis {
     // set the color scale
     const color = d3
       .scaleOrdinal()
-      .range(["#FF8A8A", "#FF2E2E", "#D10000", "#750000"]);
+      .range(["#FFFF00", "#FFA500", "#FF0000", "#000000"]);
 
     // Compute the position of each group on the pie:
     const pie = d3
@@ -215,6 +215,7 @@ class BasicVis {
       })
       .style("text-anchor", "middle")
       .style("font-size", '12px')
+      .style("fill", "#FFFFFF")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
   }
 
