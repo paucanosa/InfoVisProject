@@ -196,7 +196,7 @@ var weatherConditions = [
   "Tornado",
 ];
 
-var promises = [d3.csv("data/main3.csv"), d3.json("data/counties-albers-10m.json")];
+var promises = [d3.csv("data/preprocessed_dataset.csv"), d3.json("data/counties-albers-10m.json")];
 var numericalConditionsOrder = ["=", "&gt;", "≥", "&lt;", "≤", "x"];
 
 var numericalConditionsMap = {
