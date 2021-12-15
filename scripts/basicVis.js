@@ -103,13 +103,13 @@ class BasicVis {
       .attr("cx", 60)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#FFFF00");
+      .style("fill", "#ffbaba");
     legend
       .append("text")
       .attr("x", 70)
       .attr("y", 27)
-      .text("1")
-      .style("font-size", "10px")
+      .text("Low")
+      .style("font-size", "8px")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
       .attr("alignment-baseline", "middle");
 
@@ -118,13 +118,13 @@ class BasicVis {
       .attr("cx", 120)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#FFA500");
+      .style("fill", "#ff0000");
     legend
       .append("text")
       .attr("x", 130)
       .attr("y", 27)
-      .text("2")
-      .style("font-size", "10px")
+      .text("Medium")
+      .style("font-size", "8px")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
       .attr("alignment-baseline", "middle");
 
@@ -133,13 +133,13 @@ class BasicVis {
       .attr("cx", 180)
       .attr("cy", 25)
       .attr("r", 6)
-      .style("fill", "#FF0000");
+      .style("fill", "#a70000");
     legend
       .append("text")
       .attr("x", 190)
       .attr("y", 27)
-      .text("3")
-      .style("font-size", "10px")
+      .text("High")
+      .style("font-size", "8px")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
       .attr("alignment-baseline", "middle");
 
@@ -153,8 +153,8 @@ class BasicVis {
       .append("text")
       .attr("x", 250)
       .attr("y", 27)
-      .text("4")
-      .style("font-size", "10px")
+      .text("Critical")
+      .style("font-size", "8px")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif")
       .attr("alignment-baseline", "middle");
 
@@ -187,10 +187,12 @@ class BasicVis {
       }).length,
     };
 
+    var total_accidents = data[1] + data[2] + data[3] + data[4]
+
     // set the color scale
     const color = d3
       .scaleOrdinal()
-      .range(["#FFFF00", "#FFA500", "#FF0000", "#000000"]);
+      .range(["#ffbaba", "#ff0000", "#a70000", "#000000"]);
 
     // Compute the position of each group on the pie:
     const pie = d3
@@ -221,7 +223,7 @@ class BasicVis {
       .data(data_ready)
       .join("text")
       .text(function (d) {
-        if (d.data[1] > 0) return d.data[1];
+        if (d.data[1] > 0) return (d.data[1]*100/total_accidents).toFixed(2) + "%";
         else return "";
       })
       .attr("transform", function (d) {
