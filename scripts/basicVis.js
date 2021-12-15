@@ -9,15 +9,31 @@ class BasicVis {
       "Friday",
       "Saturday",
       "Sunday",
-    ]
+    ];
+    this.accidentCondition = [
+      "Amenity",
+      "Bump",
+      "Crossing",
+      "Give_Way",
+      "Junction",
+      "No_Exit",
+      "Railway",
+      "Roundabout",
+      "Station",
+      "Stop",
+      "Traffic_Calming",
+      "Traffic_Signal",
+      "Turning_Loop",
+    ];
+
     this.numberToWeek = {
-      0: this.weekDays[0],
-      1: this.weekDays[1],
-      2: this.weekDays[2],
-      3: this.weekDays[3],
-      4: this.weekDays[4],
-      5: this.weekDays[5],
-      6: this.weekDays[6],
+      0: this.weekDays[6],
+      1: this.weekDays[0],
+      2: this.weekDays[1],
+      3: this.weekDays[2],
+      4: this.weekDays[3],
+      5: this.weekDays[4],
+      6: this.weekDays[5],
     };
 
     // Severity bar chart data
@@ -44,29 +60,51 @@ class BasicVis {
       left: 50,
     };
     this.widthHistogram =
-      700 - this.marginHistogram.left - this.marginHistogram.right;
+      500 - this.marginHistogram.left - this.marginHistogram.right;
     this.heightHistogram =
       275 - this.marginHistogram.top - this.marginHistogram.bottom;
 
     //Boxplot data
-    this.xBoxplot = null;
-    this.yBoxplot = null;
-    this.lineBoxplot = null;
-    this.rectBoxplot = null;
-    this.marginBoxplot = {
+    this.xConditionsplot = null;
+    this.yConditionsplot = null;
+    this.xAxisConditionsplot = null;
+    this.yAxisConditionsplot = null;
+    this.lineConditionsplot = null;
+    this.rectConditionsplot = null;
+    this.marginConditionsplot = {
       top: 10,
-      right: 30,
+      right: 5,
       bottom: 30,
       left: 40,
     };
-    this.widthBoxplot =
-      700 - this.marginBoxplot.left - this.marginBoxplot.right;
-    this.heightBoxplot =
-      175 - this.marginBoxplot.top - this.marginBoxplot.bottom;
+    this.widthConditionsplot =
+      925 - this.marginConditionsplot.left - this.marginConditionsplot.right;
+    this.heightConditionsplot =
+      275 - this.marginConditionsplot.top - this.marginConditionsplot.bottom;
+
+
+    //Boxplot data
+    this.xWeatherplot = null;
+    this.yWeatherplot = null;
+    this.xAxisWeatherplot = null;
+    this.yAxisWeatherplot = null;
+    this.lineWeatherplot = null;
+    this.rectWeatherplot = null;
+    this.marginWeatherplot = {
+      top: 10,
+      right: 5,
+      bottom: 30,
+      left: 40,
+    };
+    this.widthWeatherplot =
+      925 - this.marginWeatherplot.left - this.marginWeatherplot.right;
+    this.heightWeatherplot =
+      275 - this.marginWeatherplot.top - this.marginWeatherplot.bottom;
 
     this.createPieChart();
     this.createHistogramChart();
-    this.createBoxPlot();
+    this.createConditionsplot();
+    this.createWeatherPlot();
   }
 
   updateData(filteredData) {
@@ -188,7 +226,7 @@ class BasicVis {
       }).length,
     };
 
-    var total_accidents = data[1] + data[2] + data[3] + data[4]
+    var total_accidents = data[1] + data[2] + data[3] + data[4];
 
     // set the color scale
     const color = d3
@@ -224,7 +262,8 @@ class BasicVis {
       .data(data_ready)
       .join("text")
       .text(function (d) {
-        if (d.data[1] > 0) return (d.data[1]*100/total_accidents).toFixed(2) + "%";
+        if (d.data[1] > 0)
+          return ((d.data[1] * 100) / total_accidents).toFixed(2) + "%";
         else return "";
       })
       .attr("transform", function (d) {
@@ -274,114 +313,11 @@ class BasicVis {
     });
   }
 
-  createBarChart() {
-    var svg = d3
-      .select("#severitychart")
-      .append("svg")
-      .attr(
-        "width",
-        this.widthBarChart +
-          this.marginBarChart.left +
-          this.marginBarChart.right
-      )
-      .attr(
-        "height",
-        this.heightBarChart +
-          this.marginBarChart.top +
-          this.marginBarChart.bottom
-      )
-      .append("g")
-      .attr(
-        "transform",
-        "translate(" +
-          this.marginBarChart.left +
-          "," +
-          this.marginBarChart.top +
-          ")"
-      );
-
-    this.xBarChart = d3.scaleBand().range([0, this.widthBarChart]).padding(0.2);
-    this.xAxisBarChart = svg
-      .append("g")
-      .attr("transform", "translate(0," + this.heightBarChart + ")");
-
-    this.yBarChart = d3.scaleLinear().range([this.heightBarChart, 0]);
-    this.yAxisBarChart = svg.append("g").attr("class", "myYaxis");
-
-    this.updateBarChart(svg);
-  }
-
-  updateBarChart(svg) {
-    var chartData = [
-      {
-        severity: 1,
-        accidents: this.currentData.filter(function (d) {
-          return d["Severity"] == 1;
-        }).length,
-      },
-      {
-        severity: 2,
-        accidents: this.currentData.filter(function (d) {
-          return d["Severity"] == 2;
-        }).length,
-      },
-      {
-        severity: 3,
-        accidents: this.currentData.filter(function (d) {
-          return d["Severity"] == 3;
-        }).length,
-      },
-      {
-        severity: 4,
-        accidents: this.currentData.filter(function (d) {
-          return d["Severity"] == 4;
-        }).length,
-      },
-    ];
-
-    this.xBarChart.domain(
-      chartData.map(function (d) {
-        return d.severity;
-      })
-    );
-    this.xAxisBarChart.call(d3.axisBottom(this.xBarChart));
-    this.yBarChart.domain([
-      0,
-      d3.max(chartData, function (d) {
-        return d.accidents;
-      }),
-    ]);
-    this.yAxisBarChart.call(d3.axisLeft(this.yBarChart));
-
-    if (!svg) var svg = d3.select("#severitychart").select("svg");
-
-    var u = svg.selectAll("rect").data(chartData);
-
-    const heightBarChart = this.heightBarChart;
-    const xBarChart = this.xBarChart;
-    const yBarChart = this.yBarChart;
-
-    u.enter()
-      .append("rect")
-      .merge(u)
-      .attr("x", function (d) {
-        return xBarChart(d.severity);
-      })
-      .attr("y", function (d) {
-        return yBarChart(d.accidents);
-      })
-      .attr("width", xBarChart.bandwidth())
-      .attr("height", function (d) {
-        return heightBarChart - yBarChart(d.accidents);
-      })
-      .attr("fill", "#69b3a2");
-  }
-
   updateCharts() {
-    //this.updateBarChart();
     this.updateHistogramChart();
     this.updatePieChart();
-    this.updateBoxPlot();
+    this.updateConditionsplot();
+    this.updateWeatherPlot();
   }
 
   createHistogramChart() {
@@ -434,7 +370,6 @@ class BasicVis {
   }
 
   updateHistogramChart(svgInput) {
-
     //Retrieves the day of each accident
     var parseDate = d3.timeParse("%Y-%m-%d");
     const numberToWeek = this.numberToWeek;
@@ -444,7 +379,7 @@ class BasicVis {
     });
 
     //Computes accidents per each day of the week in a processable manner.
-    var chartData =this.weekDays.map(function (day) {
+    var chartData = this.weekDays.map(function (day) {
       return {
         day: day,
         value: filteredData.filter(function (d) {
@@ -486,124 +421,219 @@ class BasicVis {
       .attr("fill", "#69b3a2");
   }
 
-  createBoxPlot() {
-    // set the dimensions and margins of the graph
-    var margin = { top: 10, right: 30, bottom: 30, left: 40 },
-      width = 400 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
-
-    // append the svg object to the body of the page
-    var svg = d3
+  createConditionsplot() {
+    // Creates the svg node and initializes the sizes.
+    const svg = d3
       .select("#durationchart")
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr(
+        "width",
+        this.widthConditionsplot +
+          this.marginConditionsplot.left +
+          this.marginConditionsplot.right
+      )
+      .attr(
+        "height",
+        this.heightConditionsplot +
+          this.marginConditionsplot.top +
+          this.marginConditionsplot.bottom
+      )
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr(
+        "transform",
+        `translate(${this.marginConditionsplot.left}, ${this.marginConditionsplot.top})`
+      );
 
-    // create dummy data
-    var data = this.currentData.map((d) => parseFloat(d["Duration"]));
+    // Defines X axis
+    this.xConditionsplot = d3
+      .scaleBand()
+      .range([0, this.widthConditionsplot])
+      .domain(this.accidentCondition)
+      .padding(0.2);
+    this.xAxisConditionsplot = svg
+      .append("g")
+      .attr("transform", "translate(0," + this.heightConditionsplot + ")");
+    this.xAxisConditionsplot.call(d3.axisBottom(this.xConditionsplot));
 
-    var minimum = data[0];
-    var maximum = data[0];
-    for (var i = 1; i < data.length; ++i) {
-      if (data[i] < minimum) {
-        minimum = data[i];
-      }
-      if (data[i] > maximum) {
-        maximum = data[i];
-      }
-    }
+    // Defines Y axis
+    this.yConditionsplot = d3
+      .scaleLinear()
+      .range([this.heightConditionsplot, 0]);
+    this.yAxisConditionsplot = svg.append("g").attr("class", "myYaxis");
 
-    // Compute summary statistics used for the box:
-    var data_sorted = data.sort(d3.ascending);
-    var q1 = d3.quantile(data_sorted, 0.25);
-    var median = d3.quantile(data_sorted, 0.5);
-    var q3 = d3.quantile(data_sorted, 0.75);
-    var interQuantileRange = q3 - q1;
-    var min = q1 - 1.5 * interQuantileRange;
-    var max = q1 + 1.5 * interQuantileRange;
-
-    // Show the Y scale
-    var y = d3.scaleLinear().domain([min, max]).range([height, 0]);
-    svg.call(d3.axisLeft(y));
-
-    // a few features for the box
-    var center = 200;
-    var width = 100;
-
-    // Show the main vertical line
-    svg
-      .append("line")
-      .attr("x1", center)
-      .attr("x2", center)
-      .attr("y1", y(min))
-      .attr("y2", y(max))
-      .attr("stroke", "black");
-
-    // Show the box
-    svg
-      .append("rect")
-      .attr("id", "boxplot_box")
-      .attr("x", center - width / 2)
-      .attr("y", y(q3))
-      .attr("height", y(q1) - y(q3))
-      .attr("width", width)
-      .attr("stroke", "black")
-      .style("fill", "#69b3a2");
-
-    // show median, min and max horizontal lines
-    svg
-      .selectAll("toto")
-      .data([min, median, max])
-      .enter()
-      .append("line")
-      .attr("x1", center - width / 2)
-      .attr("x2", center + width / 2)
-      .attr("y1", function (d) {
-        return y(d);
-      })
-      .attr("y2", function (d) {
-        return y(d);
-      })
-      .attr("stroke", "black");
-
-    var tooltip = d3
-      .select("#durationchart")
-      .append("div")
-      .style("position", "absolute")
-      .style("visibility", "hidden")
-      .style("background", "black")
-      .style("padding", "15px")
-      .style("border-radius", "5px")
-      .style("color", "white");
-
-    tooltip.append("div").text("median: " + median);
-    tooltip.append("div").text("q1: " + q1);
-    tooltip.append("div").text("q3: " + q3);
-    tooltip.append("div").text("min: " + minimum);
-    tooltip.append("div").text("max: " + maximum);
-
-    var boxplot_box = document
-      .getElementById("boxplot_box")
-      .getBoundingClientRect();
-    var right = boxplot_box.right + 15;
-    var top = boxplot_box.top;
-
-    d3.select("#boxplot_box")
-      .on("mouseover", function () {
-        return tooltip.style("visibility", "visible");
-      })
-      .on("mousemove", function () {
-        return tooltip.style("top", top + "px").style("left", right + "px");
-      })
-      .on("mouseout", function () {
-        return tooltip.style("visibility", "hidden");
-      });
+    this.updateConditionsplot(svg);
   }
 
-  updateBoxPlot() {
-    d3.select("#durationchart").select("svg").remove();
-    this.createBoxPlot();
+  updateConditionsplot(svgInput) {
+    const currentData = this.currentData;
+    //Adds the number of conditions on each accident
+    var chartData = [
+      { cause: "Amenity", value: 0 },
+      { cause: "Bump", value: 0 },
+      { cause: "Crossing", value: 0 },
+      { cause: "Give_Way", value: 0 },
+      { cause: "Junction", value: 0 },
+      { cause: "No_Exit", value: 0 },
+      { cause: "Railway", value: 0 },
+      { cause: "Roundabout", value: 0 },
+      { cause: "Station", value: 0 },
+      { cause: "Stop", value: 0 },
+      { cause: "Traffic_Calming", value: 0 },
+      { cause: "Traffic_Signal", value: 0 },
+      { cause: "Turning_Loop", value: 0 },
+    ];
+    currentData.forEach((element) => {
+      this.accidentCondition.forEach((condition) =>
+        element[condition] == "True"
+          ? (chartData[
+              chartData.findIndex((item) => item.cause == condition)
+            ].value += 1)
+          : ""
+      );
+    });
+
+    if (!svgInput) var svg = d3.select("#durationchart").select("svg");
+    else var svg = svgInput;
+
+    // Updates y Axis for the new range of values
+    this.yConditionsplot.domain([
+      0,
+      Math.max.apply(
+        Math,
+        chartData.map(function (d) {
+          return d.value;
+        })
+      ),
+    ]);
+    this.yAxisConditionsplot
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(this.yConditionsplot));
+
+    // Updates the bars
+    var bars = svg.selectAll("rect").data(chartData);
+    bars
+      .enter()
+      .append("rect")
+      .merge(bars)
+      .transition()
+      .duration(500)
+      .attr("x", (d) => this.xConditionsplot(d.cause))
+      .attr("y", (d) => this.yConditionsplot(d.value))
+      .attr("width", this.xConditionsplot.bandwidth())
+      .attr(
+        "height",
+        (d) => this.heightConditionsplot - this.yConditionsplot(d.value)
+      )
+      .attr("fill", "#69b3a2");
+  }
+
+  createWeatherPlot() {
+    // Creates the svg node and initializes the sizes.
+    const svg = d3
+      .select("#weatherchart")
+      .append("svg")
+      .attr(
+        "width",
+        this.widthWeatherplot +
+          this.marginWeatherplot.left +
+          this.marginWeatherplot.right
+      )
+      .attr(
+        "height",
+        this.heightWeatherplot +
+          this.marginWeatherplot.top +
+          this.marginWeatherplot.bottom
+      )
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${this.marginWeatherplot.left}, ${this.marginWeatherplot.top})`
+      );
+
+    // Defines X axis
+    this.xWeatherplot = d3
+      .scaleBand()
+      .range([0, this.widthWeatherplot])
+      .padding(0.2);
+    this.xAxisWeatherplot = svg
+      .append("g")
+      .attr("transform", "translate(0," + this.heightWeatherplot + ")");
+    this.xAxisWeatherplot.call(d3.axisBottom(this.xWeatherplot));
+
+    // Defines Y axis
+    this.yWeatherplot = d3
+      .scaleLinear()
+      .range([this.heightWeatherplot, 0]);
+    this.yAxisWeatherplot = svg.append("g").attr("class", "myYaxis");
+
+    this.updateWeatherPlot(svg);
+  }
+
+  async updateWeatherPlot(svgInput) {
+    const currentData = this.currentData;
+    //Adds the number of conditions on each accident
+    var chartData = [];
+    var weatherConditions = [];
+
+    await fetch("../data/basicData.json")
+      .then((mockResponses) => {
+        return mockResponses.json();
+      })
+      .then((data) => {
+        weatherConditions = data["weatherConditions"]
+      });
+    
+    weatherConditions.forEach((condition) => {
+      chartData.push({ weather: condition, value: 0 });
+    });
+    currentData.forEach((element) => {
+      chartData[
+        chartData.findIndex((item) => item.weather == element['Weather_Condition'])
+      ].value += 1
+    });
+    chartData.sort((a, b) => {
+      return b.value - a.value;
+    });
+    chartData = chartData.splice(0,15);
+
+    if (!svgInput) var svg = d3.select("#weatherchart").select("svg");
+    else var svg = svgInput;
+
+    //Updates x Axis for the new 15 categories of weather
+    this.xWeatherplot.domain(chartData.map(item=>{return item.weather}));
+    this.xAxisWeatherplot.call(d3.axisBottom(this.xWeatherplot));
+
+    // Updates y Axis for the new range of values
+    this.yWeatherplot.domain([
+      0,
+      Math.max.apply(
+        Math,
+        chartData.map(function (d) {
+          return d.value;
+        })
+      ),
+    ]);
+    this.yAxisWeatherplot
+      .transition()
+      .duration(1000)
+      .call(d3.axisLeft(this.yWeatherplot));
+
+    // Updates the bars
+    var bars = svg.selectAll("rect").data(chartData);
+    bars
+      .enter()
+      .append("rect")
+      .merge(bars)
+      .transition()
+      .duration(500)
+      .attr("x", (d) => this.xWeatherplot(d.weather))
+      .attr("y", (d) => this.yWeatherplot(d.value))
+      .attr("width", this.xWeatherplot.bandwidth())
+      .attr(
+        "height",
+        (d) => this.heightWeatherplot - this.yWeatherplot(d.value)
+      )
+      .attr("fill", "#69b3a2");
   }
 }

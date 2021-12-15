@@ -384,27 +384,36 @@
         <div class="main-slider-item">
           <input type="text" id="sampleSlider"/>
         </div>
-          <button class="filters-apply-button button-visualization" onclick="generateTimeProgress()" title="Accept requested meeting.">
+          <!-- <button class="filters-apply-button button-visualization" onclick="generateTimeProgress()" title="Accept requested meeting.">
             Run animation
           </button>
           <p class="info-icon">
             ⓘ
             <span class="tooltiptext">Visualization performs better with filtered data</span>
-          </p>
+          </p> -->
       </div>
     </div>
     <div id="basic-container" class="basic-visualization">
       <div class="basic-visualization__duration-container">
-        <p class="chart-title">Time distribution</p>
+        <p class="chart-title">Accidents per day of the week</p>
         <div id="histogramchart" class="basic-visualization__histogram"></div>
       </div>
       <div id="durationchart" class="basic-visualization__customization-container">
-        <p class="chart-title">Duration boxplot</p>
-      </div>
-      <div id="severitychart" class="basic-visualization__severity-container">
-        <p class="chart-title">Severity of accidents</p>
+        <p class="chart-title">Conditions involved</p>
       </div>
     </div>
+
+    <div id="basic-container" class="basic-visualization">
+      <div class="basic-visualization__duration-container">
+        <div id="severitychart" class="basic-visualization__severity-container">
+          <p class="chart-title">Severity</p>
+        </div>
+      </div>
+      <div id="weatherchart" class="basic-visualization__customization-container">
+        <p class="chart-title">Weather conditions</p>
+      </div>
+    </div>
+
    
     <div class="geographical-visualization-container">
       <svg id="geographicalchart" width="1000" height="600"></svg>

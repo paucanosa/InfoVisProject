@@ -44,7 +44,7 @@
 }
 
 .basic-visualization__duration-container {
-  width: 50%;
+  width: 35%;
   height: 100%;
   border-right: solid 2px lightgray;
   display: flex;
@@ -58,16 +58,15 @@
 }
 
 .basic-visualization__customization-container {
-  width: 40%;
+  width: 65%;
   height: 100%;
-  border-right: solid 2px lightgray;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .basic-visualization__severity-container {
-  width: 20%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
