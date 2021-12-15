@@ -87,6 +87,7 @@ class BasicVis {
     const svg = d3
       .select("#severitychart")
       .append("svg")
+      .attr("id", "piechartsvg")
       .attr("width", width)
       .attr("height", height)
       .append("g")
@@ -237,6 +238,40 @@ class BasicVis {
       .style("font-size", "12px")
       .style("fill", "#FFFFFF")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
+    
+    d3.select('#piechart_tooltip').remove()
+
+    var tooltip = d3
+      .select("#severitychart")
+      .append("div")
+      .attr("id", "piechart_tooltip")
+      .style("position", "fixed")
+      .style("visibility", "hidden")
+      .style("background", "black")
+      .style("padding", "15px")
+      .style("border-radius", "5px")
+      .style("color", "white");
+
+      tooltip.append("div").text("Low: " + data[1]);
+      tooltip.append("div").text("Medium: " + data[2]);
+      tooltip.append("div").text("High: " + data[3]);
+      tooltip.append("div").text("Critical: " + data[4]);
+
+    svg
+    .on("mouseover", function(event){
+      var severitychart_rect = document
+      .getElementById("severitychart")
+      .getBoundingClientRect();
+      var right = severitychart_rect.right - 420;
+      var top = severitychart_rect.top + 100;
+      tooltip
+      .style("visibility", "visible")
+      .style("left", right + "px")
+      .style("top", top + "px")
+    })
+    .on("mouseout", function () {
+      tooltip.style("visibility", "hidden");
+    });
   }
 
   createBarChart() {
