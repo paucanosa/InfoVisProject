@@ -1,6 +1,24 @@
 class BasicVis {
   constructor(params) {
     this.currentData = params.data;
+    this.weekDays = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ]
+    this.numberToWeek = {
+      0: this.weekDays[0],
+      1: this.weekDays[1],
+      2: this.weekDays[2],
+      3: this.weekDays[3],
+      4: this.weekDays[4],
+      5: this.weekDays[5],
+      6: this.weekDays[6],
+    };
 
     // Severity bar chart data
     this.marginBarChart = { top: 30, right: 30, bottom: 70, left: 60 };
@@ -214,7 +232,7 @@ class BasicVis {
           .centroid(d)})`;
       })
       .style("text-anchor", "middle")
-      .style("font-size", '12px')
+      .style("font-size", "12px")
       .style("fill", "#FFFFFF")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
   }
@@ -296,8 +314,7 @@ class BasicVis {
         return d.accidents;
       }),
     ]);
-    this.yAxisBarChart
-      .call(d3.axisLeft(this.yBarChart));
+    this.yAxisBarChart.call(d3.axisLeft(this.yBarChart));
 
     if (!svg) var svg = d3.select("#severitychart").select("svg");
 
@@ -321,27 +338,6 @@ class BasicVis {
         return heightBarChart - yBarChart(d.accidents);
       })
       .attr("fill", "#69b3a2");
-
-    // const elements = document.getElementsByClassName('labels');
-    // while (elements.length > 0) {
-    //     elements[0].parentNode.removeChild(elements[0]);
-    // }
-    // var bar = svg.selectAll(".bar")
-    //     .data(chartData)
-    //     .enter().append("g").attr('class', 'labels');
-
-    // bar.append("text")
-    //     .attr("x", function (d) {
-    //         return xBarChart(d.severity) + 62;
-    //     })
-    //     .attr("text-anchor", "end")
-    //     .attr("y", function (d) {
-    //         return yBarChart(d.accidents) + 10;
-    //     })
-    //     .attr("dy", ".35em")
-    //     .text(function (d) {
-    //         return d.accidents <= 0 ? '' : d.accidents;
-    //     });
   }
 
   updateCharts() {
@@ -352,7 +348,8 @@ class BasicVis {
   }
 
   createHistogramChart() {
-    var svg = d3
+    // Creates the svg node and initializes the sizes.
+    const svg = d3
       .select("#histogramchart")
       .append("svg")
       .attr(
@@ -370,90 +367,85 @@ class BasicVis {
       .append("g")
       .attr(
         "transform",
-        "translate(" +
-          this.marginHistogram.left +
-          "," +
-          this.marginHistogram.top +
-          ")"
+        `translate(${this.marginHistogram.left}, ${this.marginHistogram.top})`
       );
 
-    // set the ranges
+    // Defines X axis
     this.xHistogram = d3
-      .scaleTime()
-      .domain([new Date(2019, 0), new Date(2020, 0)])
-      .rangeRound([0, this.widthHistogram]);
-    this.yHistogram = d3.scaleLinear().range([this.heightHistogram, 0]);
-
-    this.yAxisHistogram = svg.append("g");
+      .scaleBand()
+      .range([0, this.widthHistogram])
+      .domain([
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ])
+      .padding(0.2);
     this.xAxisHistogram = svg
       .append("g")
       .attr("transform", "translate(0," + this.heightHistogram + ")");
-    // set the parameters for the histogram
-    this.histogramFormatter = d3
-      .bin()
-      .value(function (d) {
-        return d;
-      })
-      .domain(this.xHistogram.domain())
-      .thresholds(this.xHistogram.ticks(d3.timeMonth));
-    // append the svg object to the body of the page
-    // append a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
+    this.xAxisHistogram.call(d3.axisBottom(this.xHistogram));
 
-    // format the data
+    // Defines Y axis
+    this.yHistogram = d3.scaleLinear().range([this.heightHistogram, 0]);
+    this.yAxisHistogram = svg.append("g").attr("class", "myYaxis");
+
     this.updateHistogramChart(svg);
   }
 
   updateHistogramChart(svgInput) {
-    //Data extraction and formatted
-    var chartData = this.currentData.map(function (d) {
-      return d.Start_Time.slice(0, 7);
-    });
-    var parseDate = d3.timeParse("%Y-%m");
-    chartData = chartData.map(function (d) {
-      return parseDate(d);
+
+    //Retrieves the day of each accident
+    var parseDate = d3.timeParse("%Y-%m-%d");
+    const numberToWeek = this.numberToWeek;
+    var filteredData = this.currentData.map(function (d) {
+      const date = new Date(parseDate(d.Start_Time.slice(0, 10)));
+      return numberToWeek[date.getDay()];
     });
 
-    //Histogram bins creation
-    var bins = this.histogramFormatter(chartData);
-    this.yHistogram.domain([
-      0,
-      d3.max(bins, function (d) {
-        return d.length;
-      }),
-    ]);
+    //Computes accidents per each day of the week in a processable manner.
+    var chartData =this.weekDays.map(function (day) {
+      return {
+        day: day,
+        value: filteredData.filter(function (d) {
+          return day == d;
+        }).length,
+      };
+    });
 
     if (!svgInput) var svg = d3.select("#histogramchart").select("svg");
     else var svg = svgInput;
 
-    //Axis data updated
+    // Updates y Axis for the new range of values
+    this.yHistogram.domain([
+      0,
+      Math.max.apply(
+        Math,
+        chartData.map(function (d) {
+          return d.value;
+        })
+      ),
+    ]);
     this.yAxisHistogram
+      .transition()
+      .duration(1000)
       .call(d3.axisLeft(this.yHistogram));
-    this.xAxisHistogram.call(d3.axisBottom(this.xHistogram));
 
-    const xHistogram = this.xHistogram;
-    const yHistogram = this.yHistogram;
-    const heightHistogram = this.heightHistogram;
-
-    var u = svg.selectAll("rect").data(bins);
-    u.enter()
+    // Updates the bars
+    var bars = svg.selectAll("rect").data(chartData);
+    bars
+      .enter()
       .append("rect")
-      .merge(u)
-      .attr("class", "bar")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return (
-          "translate(" + xHistogram(d.x0) + "," + yHistogram(d.length) + ")"
-        );
-      })
-      .attr("width", function (d) {
-        const width = xHistogram(d.x1) - xHistogram(d.x0) - 1;
-        if (width > 0) return width;
-        else return 0;
-      })
-      .attr("height", function (d) {
-        return heightHistogram - yHistogram(d.length);
-      })
+      .merge(bars)
+      .transition()
+      .duration(500)
+      .attr("x", (d) => this.xHistogram(d.day))
+      .attr("y", (d) => this.yHistogram(d.value))
+      .attr("width", this.xHistogram.bandwidth())
+      .attr("height", (d) => this.heightHistogram - this.yHistogram(d.value))
       .attr("fill", "#69b3a2");
   }
 
@@ -539,39 +531,38 @@ class BasicVis {
       })
       .attr("stroke", "black");
 
-    var tooltip = d3.select("#durationchart")
+    var tooltip = d3
+      .select("#durationchart")
       .append("div")
-        .style("position", "absolute")
-        .style("visibility", "hidden")
-        .style("background", "black")
-        .style("padding", "15px")
-        .style("border-radius", "5px")
-        .style("color", "white")
-    
-    tooltip
-      .append("div")
-      .text("median: " + median)
-    tooltip
-      .append("div")
-      .text("q1: " + q1)
-    tooltip
-      .append("div")
-      .text("q3: " + q3)
-    tooltip
-      .append("div")
-      .text("min: " + minimum)
-    tooltip
-      .append("div")
-      .text("max: " + maximum)
+      .style("position", "absolute")
+      .style("visibility", "hidden")
+      .style("background", "black")
+      .style("padding", "15px")
+      .style("border-radius", "5px")
+      .style("color", "white");
 
-    var boxplot_box = document.getElementById("boxplot_box").getBoundingClientRect()
-    var right = boxplot_box.right + 15
-    var top = boxplot_box.top
+    tooltip.append("div").text("median: " + median);
+    tooltip.append("div").text("q1: " + q1);
+    tooltip.append("div").text("q3: " + q3);
+    tooltip.append("div").text("min: " + minimum);
+    tooltip.append("div").text("max: " + maximum);
+
+    var boxplot_box = document
+      .getElementById("boxplot_box")
+      .getBoundingClientRect();
+    var right = boxplot_box.right + 15;
+    var top = boxplot_box.top;
 
     d3.select("#boxplot_box")
-      .on("mouseover", function(){return tooltip.style("visibility", "visible");})
-      .on("mousemove", function(){return tooltip.style("top", top + "px").style("left",right + "px");})
-      .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+      .on("mouseover", function () {
+        return tooltip.style("visibility", "visible");
+      })
+      .on("mousemove", function () {
+        return tooltip.style("top", top + "px").style("left", right + "px");
+      })
+      .on("mouseout", function () {
+        return tooltip.style("visibility", "hidden");
+      });
   }
 
   updateBoxPlot() {
