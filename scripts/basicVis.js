@@ -249,6 +249,8 @@ class BasicVis {
       .selectAll("path")
       .data(data_ready)
       .join("path")
+      .transition()
+      .duration(500)
       .attr("d", d3.arc().innerRadius(0).outerRadius(radius))
       .attr("fill", function (d) {
         return color(d.data[0]);
@@ -261,6 +263,8 @@ class BasicVis {
       .selectAll("text")
       .data(data_ready)
       .join("text")
+      .transition()
+      .duration(500)
       .text(function (d) {
         if (d.data[1] > 0)
           return ((d.data[1] * 100) / total_accidents).toFixed(2) + "%";

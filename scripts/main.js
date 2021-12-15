@@ -212,6 +212,7 @@ var geoData;
 var activeFilters = [];
 var basicVis;
 var geoVis;
+var mySlider;
 
 Promise.all(promises).then(function (files) {
   data = files[0];
@@ -245,7 +246,9 @@ function init() {
   geoVis = new GeoVis(params);
 }
 
-var mySlider = new rSlider({
+createSlider();
+function createSlider(){
+mySlider = new rSlider({
   target: "#sampleSlider",
   values: [
     "Jan",
@@ -262,7 +265,7 @@ var mySlider = new rSlider({
     "Dec",
   ],
   range: true,
-  width: "1250px",
+  width: "1350px",
   tooltip: false,
   scale: true,
   labels: true,
@@ -273,6 +276,60 @@ var mySlider = new rSlider({
     applyFilters();
   },
 });
+}
+
+function swapTimeFilterButtons(){
+  mySlider.range = false;
+}
+
+function setUniqueMonthFilter(month){
+  const buttonMonth = document.getElementById('timebutton'+month);
+  const previousButtonMonth = document.getElementById('timebutton'+activeFilters.time.start)
+  previousButtonMonth.className ="time-button"
+  buttonMonth.className = "time-button time-button-active";
+  activeFilters.time.start = month;
+  activeFilters.time.end = month;
+  applyFilters();
+}
+
+function swapTimeFilterMethod(){
+  const swapButton = document.getElementById('swaptimebutton');
+  const buttonsSet = document.getElementById('timebuttonsset');
+  const sliderContainer = document.getElementById('slider-container')
+  if(swapButton.innerHTML=="Buttons"){
+    [
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ].forEach(item=>document.getElementById('timebutton'+item).className="time-button")
+    swapButton.innerHTML = "Slider";
+    buttonsSet.className = "time-buttons-container"
+    sliderContainer.className = "main-slider-item display-none"
+    activeFilters.time.start = "Jan"
+    activeFilters.time.end = "Jan"
+    const buttonMonth = document.getElementById('timebuttonJan');
+    buttonMonth.className = "time-button time-button-active";
+    applyFilters()
+  }
+  else{
+    swapButton.innerHTML = "Buttons"
+    buttonsSet.className = "time-buttons-container display-none"
+    sliderContainer.className = "main-slider-item"
+    mySlider.setValues('Jan','Dec')
+    activeFilters.time.start = "Jan"
+    activeFilters.time.end = "Dec"
+    applyFilters()
+  }
+}
+
 
 function initFiltersElements() {
   var parentNode = document.getElementById("statesfilters");

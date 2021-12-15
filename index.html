@@ -379,10 +379,29 @@
       </div>
     </div>
     <div class="main-slider-container">
-      <p class="chart-title">Time selector</p>
+      <div class="time-filter-container">
+        <p class="time-filter-title">Time Filter</p>
+        <div class="button-swap-time-container">
+          <p class="button-swap-time" id="swaptimebutton"onclick="swapTimeFilterMethod()">Buttons</p>
+        </div>
+      </div>
       <div class="u-flex-row">
-        <div class="main-slider-item">
+        <div id="slider-container"class="main-slider-item">
           <input type="text" id="sampleSlider"/>
+        </div>
+        <div id="timebuttonsset" class="time-buttons-container display-none">
+              <button id="timebuttonJan" class="time-button" onclick="setUniqueMonthFilter('Jan')">Jan</button>
+              <button id="timebuttonFeb" class="time-button" onclick="setUniqueMonthFilter('Feb')">Feb</button>
+              <button id="timebuttonMar" class="time-button" onclick="setUniqueMonthFilter('Mar')">Mar</button>
+              <button id="timebuttonApr" class="time-button" onclick="setUniqueMonthFilter('Apr')">Apr</button>
+              <button id="timebuttonMay" class="time-button" onclick="setUniqueMonthFilter('May')">May</button>
+              <button id="timebuttonJun" class="time-button" onclick="setUniqueMonthFilter('Jun')">Jun</button>
+              <button id="timebuttonJul" class="time-button" onclick="setUniqueMonthFilter('Jul')">Jul</button>
+              <button id="timebuttonAug" class="time-button" onclick="setUniqueMonthFilter('Aug')">Aug</button>
+              <button id="timebuttonSep" class="time-button" onclick="setUniqueMonthFilter('Sep')">Sep</button>
+              <button id="timebuttonOct" class="time-button" onclick="setUniqueMonthFilter('Oct')">Oct</button>
+              <button id="timebuttonNov" class="time-button" onclick="setUniqueMonthFilter('Nov')">Nov</button>
+              <button id="timebuttonDec" class="time-button" onclick="setUniqueMonthFilter('Dec')">Dec</button>
         </div>
           <!-- <button class="filters-apply-button button-visualization" onclick="generateTimeProgress()" title="Accept requested meeting.">
             Run animation

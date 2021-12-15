@@ -20,13 +20,13 @@
   border: solid 2px lightgray;
   height: 463px;
   background-color: rgb(242, 242, 242);
-  overflow:hidden;
+  overflow: hidden;
   transition: all 0.75s;
 }
 
-.filters-disabled{
-    height: 34px;
-    transition: all 0.75s;
+.filters-disabled {
+  height: 34px;
+  transition: all 0.75s;
 }
 
 .basic-visualization {
@@ -83,8 +83,8 @@
   transition: 0.4s;
 }
 
-.filters-title-container:hover{
-    background-color: rgb(185, 185, 185);
+.filters-title-container:hover {
+  background-color: rgb(185, 185, 185);
 }
 .filters-apply-button-container {
   display: flex;
@@ -102,8 +102,8 @@
   margin-bottom: 3px;
 }
 
-.filters-title--right{
-    font-size: 16px;
+.filters-title--right {
+  font-size: 16px;
   margin-left: 20px;
   color: black;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -192,7 +192,7 @@
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-left: 20px;
 }
-.geographical-visualization-container{
+.geographical-visualization-container {
   border: solid 2px lightgray;
   border-radius: 3px;
   width: calc(100% - 40px);
@@ -208,10 +208,10 @@
   align-items: center;
 }
 
-.geo-map-separator{
+.geo-map-separator {
   min-height: 100%;
-border-right: solid 2px lightgray;
-width: 10px;
+  border-right: solid 2px lightgray;
+  width: 10px;
 }
 
 .separator {
@@ -301,19 +301,18 @@ width: 10px;
   margin-right: 20px;
 }
 
-
 /* Tooltip text */
-.info-icon{
+.info-icon {
   margin-left: 10px;
   margin-right: 20px;
   margin-bottom: 6px;
-  color:rgb(106, 103, 103);
-  cursor:default;
+  color: rgb(106, 103, 103);
+  cursor: default;
 }
 .info-icon .tooltiptext {
   visibility: hidden;
   text-align: center;
- 
+
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
@@ -333,15 +332,14 @@ width: 10px;
   animation: all 0.5s;
 }
 
-.button-visualization{
+.button-visualization {
   margin-left: 20px;
-  margin-bottom:10px;
+  margin-bottom: 10px;
   margin-right: 0px;
 }
 
-
 /* Main time slider */
-.main-slider-container{
+.main-slider-container {
   margin: 20px;
   width: calc(100% - 40px);
   height: 90px;
@@ -349,9 +347,95 @@ width: 10px;
   border-radius: 3px;
 }
 
-
-.main-slider-item{
-  margin-left: 20px;
-  margin-right: auto;
+.main-slider-item {
   display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Time filter */
+.button-swap-time-container {
+  width: 20%;
+  background-color: lightgray;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  height: 30px;
+  font-size: 12px;
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.button-swap-time {
+  width: 100px;
+  background-color: whitesmoke;
+  height: calc(100% - 5px);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  border: solid 1px darkgray;
+  margin-left: auto;
+  justify-content: center;
+  color: rgb(71, 71, 71);
+  margin-right: 20px;
+}
+
+.button-swap-time:hover{
+  border-width: 2px;
+}
+
+.time-filter-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.time-filter-title {
+  width: 80%;
+  min-height: 30px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  background-color: lightgray;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+
+/* Time buttons */
+
+.time-buttons-container{
+  display: flex;
+  align-items: center;
+  height: 47px;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: calc(100% - 40px);
+}
+
+.time-button{
+  width: 100px;
+  background-color: whitesmoke;
+  height: 25px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  border: solid 1px #69b3a2;
+  justify-content: center;
+  color: rgb(71, 71, 71);
+  cursor: pointer;
+  animation: all 0.3s;
+}
+
+.time-button-active{
+  background-color: #69b3a2;
+  color: white;
+  animation: all 0.3s;
+}
+
+
+.display-none{
+  display: none;
 }
