@@ -1,3 +1,4 @@
+data/counties-albers-10m.json
 data/main.csv
 data/main*.csv
 scripts/logicData.js

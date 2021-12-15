@@ -196,7 +196,7 @@ var weatherConditions = [
   "Tornado",
 ];
 
-var promises = [d3.csv("data/main3.csv")];
+var promises = [d3.csv("data/main3.csv"), d3.json("data/counties-albers-10m.json")];
 var numericalConditionsOrder = ["=", "&gt;", "≥", "&lt;", "≤", "x"];
 
 var numericalConditionsMap = {
@@ -208,12 +208,14 @@ var numericalConditionsMap = {
 };
 var currentData = data;
 var data;
+var geoData;
 var activeFilters = [];
 var basicVis;
 var geoVis;
 
 Promise.all(promises).then(function (files) {
   data = files[0];
+  geoData = files[1];
   currentData = data;
   init();
 });
@@ -235,6 +237,7 @@ function init() {
   const params = {
     data: currentData,
     statesData: statesData,
+    geoData: geoData,
   };
 
   initFiltersElements();

@@ -3,6 +3,8 @@ class GeoVis {
     constructor(params){
         this.currentData = params.data;
         this.statesData = params.statesData;
+        this.geoData = params.geoData;
+
         this.stateMapping = {};
         this.stateCounts = {};
         this.stateCountStats = {};
@@ -14,9 +16,6 @@ class GeoVis {
 
         this.projection = null;
         this.pointPixelSize = 3.0;
-
-        // this.geographicalSvg = d3.select("#geographicalchart");
-        // this.sideSvg = d3.select("#geographicalsidechart");
 
         this.geographicalSvg = null;
         this.sideSvg = null;
@@ -56,27 +55,22 @@ class GeoVis {
         var sideSvg = this.sideSvg;
 
         // Add states with updated colors
-        d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
-            if (this.selectedState != undefined) {
-                var states = sideSvg
-                    .selectAll("path")
-                    .data(topojson.feature(us, us.objects.states).features, d => {return d.properties.name});
-                
-                states.join(
-                    enter => { 
-                        return enter.append("path").merge(states)
-                            .attr("fill", d => d.properties.name == this.selectedState ? "lightblue" : "rgb(240,240,240)")
-                            .attr("d", path)
-                            .style("stroke", d => d.properties.name == this.selectedState ? "grey" : "white");
-                    },
-                    update =>{return update;},
-                    exit => {return exit.remove();}
-                );
-            }
-
-            this.pointsLayer.raise();
-            this.infoLayer.raise();
-        });
+        if (this.selectedState != undefined) {
+            var states = sideSvg
+                .selectAll("path")
+                .data(topojson.feature(this.geoData, this.geoData.objects.states).features, d => {return d.properties.name});
+            
+            states.join(
+                enter => { 
+                    return enter.append("path").merge(states)
+                        .attr("fill", d => d.properties.name == this.selectedState ? "lightblue" : "rgb(240,240,240)")
+                        .attr("d", path)
+                        .style("stroke", d => d.properties.name == this.selectedState ? "grey" : "white");
+                },
+                update =>{return update;},
+                exit => {return exit.remove();}
+            );
+        }
 
         // Get points and counts per state
         var dataForState = this.currentData
@@ -295,26 +289,24 @@ class GeoVis {
         var geographicalSvg = this.geographicalSvg;
 
         // Add states with updated colors
-        d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
-            var states = geographicalSvg
-                .selectAll("path")
-                .data(topojson.feature(us, us.objects.states).features, d => {return d.properties.name});
+        var states = geographicalSvg
+            .selectAll("path")
+            .data(topojson.feature(this.geoData, this.geoData.objects.states).features, d => {return d.properties.name});
 
-            states.join(
-                enter => { 
-                    return enter.append("path").merge(states)
-                        .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
-                        .attr("d", path)
-                        .style("stroke", "white")
-                        .on('click', event => {
-                            this.selectedState = event.target.__data__.properties.name;
-                            this.updateSideChart();
-                        })
-                },
-                update =>{return update;},
-                exit => {return exit.remove();}
-            );
-        });
+        states.join(
+            enter => { 
+                return enter.append("path").merge(states)
+                    .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
+                    .attr("d", path)
+                    .style("stroke", "white")
+                    .on('click', event => {
+                        this.selectedState = event.target.__data__.properties.name;
+                        this.updateSideChart();
+                    })
+            },
+            update =>{return update;},
+            exit => {return exit.remove();}
+        );
         
         // Add gradient objects with gradient CSS (to be used for the legend)
         var colorScaleGradient = this.geographicalSvg.append('defs')
