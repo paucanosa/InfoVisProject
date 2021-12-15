@@ -15,11 +15,17 @@ class GeoVis {
         this.projection = null;
         this.pointPixelSize = 3.0;
 
+        // this.geographicalSvg = d3.select("#geographicalchart");
+        // this.sideSvg = d3.select("#geographicalsidechart");
+
+        this.geographicalSvg = null;
+        this.sideSvg = null;
+
+        this.pointsLayer = null;
+        this.infoLayer = null;
+
         this.createGeographicalChart();
         this.createSideChart();
-
-        this.geographicalSvg = d3.select("#geographicalchart");
-        this.sideSvg = d3.select("#geographicalsidechart");
     }
 
     updateData(filteredData){
@@ -34,9 +40,8 @@ class GeoVis {
 
     createSideChart(){
         this.sideSvg = d3.select("#geographicalsidechart");
-        
-        const width = +this.sideSvg.attr("width"),
-            height = +this.sideSvg.attr("height");
+        this.pointsLayer = this.sideSvg.append("g");
+        this.infoLayer = this.sideSvg.append("g");
 
         this.updateSideChart();
     }
@@ -46,7 +51,6 @@ class GeoVis {
             height = +this.sideSvg.attr("height");
 
         var path = d3.geoPath();
-        var g = this.sideSvg.append("g");
         
         var projection = this.projection;
         var sideSvg = this.sideSvg;
@@ -60,7 +64,7 @@ class GeoVis {
                 
                 states.join(
                     enter => { 
-                        return enter.append("path")
+                        return enter.append("path").merge(states)
                             .attr("fill", d => d.properties.name == this.selectedState ? "lightblue" : "rgb(240,240,240)")
                             .attr("d", path)
                             .style("stroke", d => d.properties.name == this.selectedState ? "grey" : "white");
@@ -68,8 +72,10 @@ class GeoVis {
                     update =>{return update;},
                     exit => {return exit.remove();}
                 );
-
             }
+
+            this.pointsLayer.raise();
+            this.infoLayer.raise();
         });
 
         // Get points and counts per state
@@ -118,56 +124,63 @@ class GeoVis {
             }
         });
 
-        // Remove points from this.sideSvg that aren't present
-        this.sideSvg.selectAll("circle")
-            .data([])
-            .exit()
-            .remove();
+        // add accident points to this.sideSvg
+        var accidentPoints = this.pointsLayer
+            .selectAll("circle")
+            .data(this.points, d => d)
 
-        // add circles to this.sideSvg
-        this.sideSvg.selectAll("circle")
-            .data(this.points).enter()
-            .append("circle")
-            .attr("cx", d => this.projection(d)[0])
-            .attr("cy", d => this.projection(d)[1])
-            .attr("r", "" + this.pointPixelSize + "px")
-            .attr("fill", "red");
-
-        // Remove text from this.sideSvg
-        this.sideSvg.selectAll("text")
-            .data([])
-            .exit()
-            .remove();
+        accidentPoints.join(
+            enter => {
+                return enter.append("circle").merge(accidentPoints)
+                    .attr("cx", d => this.projection(d)[0])
+                    .attr("cy", d => this.projection(d)[1])
+                    .attr("r", "" + this.pointPixelSize + "px")
+                    .attr("fill", "red");
+            },
+            update => {return update;},
+            exit => {return exit.remove();}
+        )
 
         // Render current info text
         var infoTexts = [];
 
         if (this.selectedState != undefined) {
             infoTexts = [
-                "State: " + this.selectedState,
-                "Accidents: " + accidentCount,
-                "Accident percentage (with regard to US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%",
-                "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1),
-                "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1),
-                "Avg. Severity : " + averageSeverity.toFixed(1),
-                "Avg. T° : " + averageTemperature.toFixed(1) + " °F",
-                "Avg. Humidity : " + averageHumidity.toFixed(1) + "%",
-                "Avg. precipitation: " + averagePrecipitation.toFixed(2) + " inches",
-                "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph",
+                ["State", "State: " + this.selectedState],
+                ["Accidents", "Accidents: " + accidentCount],
+                ["Accident percentage", "Accident percentage (with regard to US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%"],
+                ["Delta from mean", "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1)],
+                ["Delta from max", "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1)],
+                ["Avg. Severity", "Avg. Severity : " + averageSeverity.toFixed(1)],
+                ["Avg. T", "Avg. T° : " + averageTemperature.toFixed(1) + " °F"],
+                ["Avg. Humidity", "Avg. Humidity : " + averageHumidity.toFixed(1) + "%"],
+                ["Avg. precipitation", "Avg. precipitation: " + averagePrecipitation.toFixed(2) + " inches"],
+                ["Avg. wind speed", "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph"],
             ]
         }
 
-        infoTexts.forEach((infoText, index) => {
-            this.sideSvg.append("text")
-                .data([infoText])
-                .attr("text-anchor", "start")
-                .attr("x",15)
-                .attr("y", 15 + index * 18)
-                .attr("dy", ".30em")
-                .attr("font-size","14px")
-                .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
-                .text(d => d);
-        })
+        // infoTexts.forEach((infoText, index) => {
+        var textLines = this.infoLayer
+            .selectAll("text")
+            .data(infoTexts, d => d[0])
+
+        textLines.join(
+            enter => {
+                return enter.append("text").merge(textLines)
+                    .attr("text-anchor", "start")
+                    .attr("x",15)
+                    .attr("y", (d,i) => 15 + i * 18)
+                    .attr("dy", ".30em")
+                    .attr("font-size","14px")
+                    .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
+                    .text(d => d[1]);
+            },
+            update => {return update;},
+            exit => {return exit.remove();}
+        )
+
+        this.pointsLayer.raise();
+        this.infoLayer.raise();
         
         // Calculate numbers for pan location and translation boundaries
         var translateLongLat = null;
@@ -179,8 +192,8 @@ class GeoVis {
 
             translateLongLat = [stateData.longitude, stateData.latitude];
             translatePoint = [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25];
-            translateBounds = [[this.projection(translateLongLat)[0], this.projection(translateLongLat)[1]],
-                               [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1]]];
+            translateBounds = [[this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25],
+                               [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25]];
         } else {
             translateBounds = [[-width, -height], [width * 2, height * 2]];
         }
@@ -283,14 +296,10 @@ class GeoVis {
 
         // Add states with updated colors
         d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json").then( us => {
-           // us.objects.states.geometries = us.objects.states.geometries.filter(d => Math.random() <= 0.3)
-           // parseInt(Math.random() * 10)
             var states = geographicalSvg
                 .selectAll("path")
                 .data(topojson.feature(us, us.objects.states).features, d => {return d.properties.name});
-                // .data(topojson.feature(us, us.objects.states).features, (d,i) => {console.log('load ' + i);console.log(d.properties.name); d.properties.name});
 
-            // console.log("\n\n Everything is loaded \n\n")
             states.join(
                 enter => { 
                     return enter.append("path").merge(states)
@@ -305,30 +314,6 @@ class GeoVis {
                 update =>{return update;},
                 exit => {return exit.remove();}
             );
-            
-            // states.enter().append("path")
-            //     // .attr("id", d => "geographicalchart-path-" + d.properties.name)
-            //     .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
-            //     .attr("d", path)
-            //     .style("stroke", "white")
-            //     .on('click', event => {
-            //         this.selectedState = event.target.__data__.properties.name;
-            //         this.updateSideChart();
-            //     });
-            
-            // // states
-            // //     // .attr("id", d => "geographicalchart-path-" + d.properties.name)
-            // //     .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
-            // //     .attr("d", path)
-            // //     .style("stroke", "white")
-            // //     .on('click', event => {
-            // //         this.selectedState = event.target.__data__.properties.name;
-            // //         this.updateSideChart();
-            // //     });
-            
-            // states.exit().remove().attr("d", (d) => {console.log('exit'); console.log(d.properties.name); d});
-
-            // console.log("\n\n Everything is exited \n\n")
         });
         
         // Add gradient objects with gradient CSS (to be used for the legend)
@@ -348,61 +333,43 @@ class GeoVis {
             .attr('offset', (_, index) => {
                 return index * 100 + '%';
             })
-
-        // Remove outdated legend
-        this.geographicalSvg.selectAll('rect')
-            .data([])
-            .exit()
-            .remove();
         
-        // Remove outdated legend min and max value texts
-        this.geographicalSvg.selectAll('text')
-            .data([])
-            .exit()
-            .remove();
+        var legend = this.geographicalSvg
+            .selectAll("rect")
+            .data(['legend'], d => d)
         
-        // Add legend and min max value texts
-        this.geographicalSvg.append("rect")
-            .attr("class", "legendRect")
-            .attr("x", width - width / 4)
-            .attr("y", 10)
-            .attr("width", width / 4)
-            .attr("height", 10)
-            .style("fill", "url(#colorScaleGradient)")
-            .style("stroke", "black")
-            .style("stroke-width", "0.5px");
+        legend.join(
+            enter => {
+                return enter.append("rect")
+                    .attr("class", "legendRect")
+                    .attr("x", width - width / 4)
+                    .attr("y", 10)
+                    .attr("width", width / 4)
+                    .attr("height", 10)
+                    .style("fill", "url(#colorScaleGradient)")
+                    .style("stroke", "black")
+                    .style("stroke-width", "0.5px");
+            },
+            update => {return update;},
+            exit => {return exit.remove();}
+        )
 
-        this.geographicalSvg.append("text")
-            .data([0])
-            .attr("text-anchor", "start")
-            .attr("x", width - width / 4)
-            .attr("y", 30)
-            .attr("dy", ".35em")
-            .text(d => d);
-
-        this.geographicalSvg.append("text")
-            .data([this.stateCountStats.max])
-            .attr("text-anchor", "end")
-            .attr("x", width)
-            .attr("y", 30)
-            .attr("dy", ".35em")
-            .text(d => d);
+        var legendText = this.geographicalSvg
+            .selectAll("rect")
+            .data(["start", "end"], d => d)
         
-        // Define zoom behavior for the geographicalSvg
-        // var zoom = d3.zoom()
-        //     .scaleExtent([1, 25])
-        //     .on('zoom', event => {
-        //         this.geographicalSvg = d3.select("#geographicalchart");
-
-        //         this.geographicalSvg.selectAll('path')
-        //             .attr('transform', event.transform);
-                
-        //         this.geographicalSvg.selectAll('circle')
-        //             .attr('transform', event.transform)
-        //             .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.8)) + "px");
-        //     });
-
-        // this.geographicalSvg.call(zoom);
-
+        legendText.join(
+            enter => {
+                return enter.append("rect")
+                    .attr("class", "legendRect")
+                    .attr("text-anchor", "start")
+                    .attr("x", (d, i) => width - (1 - i) * (width / 4))
+                    .attr("y", 30)
+                    .attr("dy", ".35em")
+                    .text(d => d == "start" ? 0 : this.stateCountStats.max);
+            },
+            update => {return update},
+            exit => {return exit.remove();}
+        )
     }
 }
