@@ -15,7 +15,7 @@ class GeoVis {
         this.statesData.forEach(state => this.stateMapping[state.value] = state.label)
 
         this.projection = null;
-        this.pointPixelSize = 3.0;
+        this.pointPixelSize = 1.5;
 
         this.geographicalSvg = null;
         this.sideSvg = null;
