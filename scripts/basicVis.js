@@ -592,6 +592,7 @@ class BasicVis {
       chartData.push({ weather: condition, value: 0 });
     });
     currentData.forEach((element) => {
+      if(element['Weather_Condition']!='')
       chartData[
         chartData.findIndex((item) => item.weather == element['Weather_Condition'])
       ].value += 1
