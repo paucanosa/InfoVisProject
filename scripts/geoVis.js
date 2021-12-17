@@ -121,7 +121,7 @@ class GeoVis {
             });
 
             // add state capital point to the side panel
-            var censusStateInfo = this.censusData.filter(dataPoint => dataPoint["STATE"] == this.selectedState);
+            var censusStateInfo = this.censusData.filter(dataPoint => dataPoint["STATE"] == this.selectedState)[0];
             var statePopulation = parseInt(censusStateInfo["POPESTIMATE2019"]);
             var stateCapitalCoordinates = [censusStateInfo["long"], censusStateInfo["lat"]];
 
@@ -151,8 +151,10 @@ class GeoVis {
 
             infoTexts = [
                 ["State", "State: " + this.selectedState],
-                ["Accidents", "Accidents: " + accidentCount],
-                ["Accident percentage", "Accident percentage (with regard to US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%"],
+                ["Population", "Population: " + statePopulation.toLocaleString()],
+                ["Accidents", "Accidents: " + accidentCount.toLocaleString()],
+                ["Accidents per million inhabitants", "Accidents per million inhabitants: " + parseInt(accidentCount / statePopulation * 1_000_000)],
+                ["Accident percentage", "Accident % (regarding US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%"],
                 ["Delta from mean", "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1)],
                 ["Delta from max", "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1)],
                 ["Avg. Severity", "Avg. Severity : " + averageSeverity.toFixed(1)],
@@ -263,9 +265,6 @@ class GeoVis {
 
         // Get points and counts per state
         this.points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
-
-        var censusStateInfo = this.censusData.filter(dataPoint => dataPoint["STATE"] == this.selectedState);
-        var statePopulation = parseInt(censusStateInfo["POPESTIMATE2019"]);
 
         var weightedByPopulation = true;
 
