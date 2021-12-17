@@ -4,9 +4,11 @@ class GeoVis {
         this.currentData = params.data;
         this.statesData = params.statesData;
         this.geoData = params.geoData;
+        this.censusData = params.censusData;
 
         this.stateMapping = {};
         this.stateCounts = {};
+        this.weightedStateCounts = {};
         this.stateCountStats = {};
 
         this.selectedState = null;
@@ -20,6 +22,7 @@ class GeoVis {
         this.geographicalSvg = null;
         this.sideSvg = null;
 
+        this.capitalPointsLayer = null;
         this.pointsLayer = null;
         this.infoLayer = null;
 
@@ -70,75 +73,82 @@ class GeoVis {
                 update =>{return update;},
                 exit => {return exit.remove();}
             );
-        }
 
-        // Get points and counts per state
-        var dataForState = this.currentData
-            .filter(d => this.stateMapping[d.State] == this.selectedState);
-        
-        this.points = dataForState.map(d => [
-            parseFloat(parseFloat(d.Start_Lng).toFixed(1)),
-            parseFloat(parseFloat(d.Start_Lat).toFixed(1))
-        ]);
-        
-        // Calculate data for info text
-        var accidentCount = this.points.length;
-        var accidentPercentage = parseFloat(this.points.length) / this.currentData.length * 100;
-        var dataForStateWithSeverity = dataForState.filter(d => d["Severity"] != "");
-        var totalSeverity = dataForStateWithSeverity.map(d => d["Severity"]).reduce((a, b) => a + parseInt(b), 0);
-        var averageSeverity = dataForStateWithSeverity.length > 0 ? totalSeverity / dataForStateWithSeverity.length : 0;
-        
-        var dataForStateWithTemperature = dataForState.filter(d => d["Temperature(F)"] != "");
-        var totalTemperature = dataForStateWithTemperature.map(d => d["Temperature(F)"]).reduce((a, b) => a + parseFloat(b), 0);
-        var averageTemperature = dataForStateWithTemperature.length > 0 ? totalTemperature / dataForStateWithTemperature.length : 0;
+            // Get points and counts per state
+            var dataForState = this.currentData
+                .filter(d => this.stateMapping[d.State] == this.selectedState);
+            
+            this.points = dataForState.map(d => [
+                parseFloat(parseFloat(d.Start_Lng).toFixed(1)),
+                parseFloat(parseFloat(d.Start_Lat).toFixed(1))
+            ]);
+            
+            // Calculate data for info text
+            var accidentCount = this.points.length;
+            var accidentPercentage = parseFloat(this.points.length) / this.currentData.length * 100;
+            var dataForStateWithSeverity = dataForState.filter(d => d["Severity"] != "");
+            var totalSeverity = dataForStateWithSeverity.map(d => d["Severity"]).reduce((a, b) => a + parseInt(b), 0);
+            var averageSeverity = dataForStateWithSeverity.length > 0 ? totalSeverity / dataForStateWithSeverity.length : 0;
+            
+            var dataForStateWithTemperature = dataForState.filter(d => d["Temperature(F)"] != "");
+            var totalTemperature = dataForStateWithTemperature.map(d => d["Temperature(F)"]).reduce((a, b) => a + parseFloat(b), 0);
+            var averageTemperature = dataForStateWithTemperature.length > 0 ? totalTemperature / dataForStateWithTemperature.length : 0;
 
-        var dataForStateWithHumidity = dataForState.filter(d => d["Humidity(%)"] != "");
-        var totalHumidity = dataForStateWithHumidity.map(d => d["Humidity(%)"]).reduce((a, b) => a + parseFloat(b), 0);
-        var averageHumidity = dataForStateWithHumidity.length > 0 ? totalHumidity / dataForStateWithHumidity.length : 0;
+            var dataForStateWithHumidity = dataForState.filter(d => d["Humidity(%)"] != "");
+            var totalHumidity = dataForStateWithHumidity.map(d => d["Humidity(%)"]).reduce((a, b) => a + parseFloat(b), 0);
+            var averageHumidity = dataForStateWithHumidity.length > 0 ? totalHumidity / dataForStateWithHumidity.length : 0;
 
-        var dataForStateWithPrecipitation = dataForState.filter(d => d["Precipitation(in)"] != "");
-        var totalPrecipitation = dataForStateWithPrecipitation.map(d => d["Precipitation(in)"]).reduce((a, b) => a + parseFloat(b), 0);
-        var averagePrecipitation = dataForStateWithPrecipitation.length > 0 ? totalPrecipitation / dataForStateWithPrecipitation.length : 0;
+            var dataForStateWithPrecipitation = dataForState.filter(d => d["Precipitation(in)"] != "");
+            var totalPrecipitation = dataForStateWithPrecipitation.map(d => d["Precipitation(in)"]).reduce((a, b) => a + parseFloat(b), 0);
+            var averagePrecipitation = dataForStateWithPrecipitation.length > 0 ? totalPrecipitation / dataForStateWithPrecipitation.length : 0;
 
-        var dataForStateWithWindSpeed = dataForState.filter(d => d["Wind_Speed(mph)"] != "");
-        var totalWindSpeed = dataForStateWithWindSpeed.map(d => d["Wind_Speed(mph)"]).reduce((a, b) => a + parseFloat(b), 0);
-        var averageWindSpeed = dataForStateWithWindSpeed.length > 0 ? totalWindSpeed / dataForStateWithWindSpeed.length : 0;
+            var dataForStateWithWindSpeed = dataForState.filter(d => d["Wind_Speed(mph)"] != "");
+            var totalWindSpeed = dataForStateWithWindSpeed.map(d => d["Wind_Speed(mph)"]).reduce((a, b) => a + parseFloat(b), 0);
+            var averageWindSpeed = dataForStateWithWindSpeed.length > 0 ? totalWindSpeed / dataForStateWithWindSpeed.length : 0;
 
-        // Quantize point coordinates and remove duplicates for performance
-        var pointCoordinatesBitmap = {};
-        
-        this.points = this.points.filter(d => {
-            pointCoordinatesBitmap[d[0]] = pointCoordinatesBitmap[d[0]] || {};
+            // Quantize point coordinates and remove duplicates for performance
+            var pointCoordinatesBitmap = {};
+            
+            this.points = this.points.filter(d => {
+                pointCoordinatesBitmap[d[0]] = pointCoordinatesBitmap[d[0]] || {};
 
-            if (pointCoordinatesBitmap[d[0]][d[1]] === true) {
-                return false;
-            } else {
-                pointCoordinatesBitmap[d[0]][d[1]] = true;
-                return true;
-            }
-        });
+                if (pointCoordinatesBitmap[d[0]][d[1]] === true) {
+                    return false;
+                } else {
+                    pointCoordinatesBitmap[d[0]][d[1]] = true;
+                    return true;
+                }
+            });
 
-        // add accident points to this.sideSvg
-        var accidentPoints = this.pointsLayer
-            .selectAll("circle")
-            .data(this.points, d => d)
+            // add state capital point to the side panel
+            var censusStateInfo = this.censusData.filter(dataPoint => dataPoint["STATE"] == this.selectedState);
+            var statePopulation = parseInt(censusStateInfo["POPESTIMATE2019"]);
+            var stateCapitalCoordinates = [censusStateInfo["long"], censusStateInfo["lat"]];
 
-        accidentPoints.join(
-            enter => {
-                return enter.append("circle").merge(accidentPoints)
-                    .attr("cx", d => this.projection(d)[0])
-                    .attr("cy", d => this.projection(d)[1])
-                    .attr("r", "" + this.pointPixelSize + "px")
-                    .attr("fill", "red");
-            },
-            update => {return update;},
-            exit => {return exit.remove();}
-        )
+            var accidentPoints = this.pointsLayer
+                .selectAll("circle")
+                .data(this.points, d => d)
 
-        // Render current info text
-        var infoTexts = [];
+            // add accident points to the side panel
+            var accidentPoints = this.pointsLayer
+                .selectAll("circle")
+                .data(this.points, d => d)
 
-        if (this.selectedState != undefined) {
+            accidentPoints.join(
+                enter => {
+                    return enter.append("circle").merge(accidentPoints)
+                        .attr("cx", d => this.projection(d)[0])
+                        .attr("cy", d => this.projection(d)[1])
+                        .attr("r", "" + this.pointPixelSize + "px")
+                        .attr("fill", "red");
+                },
+                update => {return update;},
+                exit => {return exit.remove();}
+            )
+
+            // Render current info text
+            var infoTexts = [];
+
             infoTexts = [
                 ["State", "State: " + this.selectedState],
                 ["Accidents", "Accidents: " + accidentCount],
@@ -151,35 +161,35 @@ class GeoVis {
                 ["Avg. precipitation", "Avg. precipitation: " + averagePrecipitation.toFixed(2) + " inches"],
                 ["Avg. wind speed", "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph"],
             ]
+
+            // infoTexts.forEach((infoText, index) => {
+            var textLines = this.infoLayer
+                .selectAll("text")
+                .data(infoTexts, d => d[0])
+
+            textLines.join(
+                enter => {
+                    return enter.append("text").merge(textLines)
+                        .attr("text-anchor", "start")
+                        .attr("x",15)
+                        .attr("y", (d,i) => 15 + i * 18)
+                        .attr("dy", ".30em")
+                        .attr("font-size","14px")
+                        .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
+                        .text(d => d[1]);
+                },
+                update => {return update;},
+                exit => {return exit.remove();}
+            )
+
+            this.pointsLayer.raise();
+            this.infoLayer.raise();
+            
+            // Calculate numbers for pan location and translation boundaries
+            var translateLongLat = null;
+            var translateBounds = null;
+            var translatePoint = null;
         }
-
-        // infoTexts.forEach((infoText, index) => {
-        var textLines = this.infoLayer
-            .selectAll("text")
-            .data(infoTexts, d => d[0])
-
-        textLines.join(
-            enter => {
-                return enter.append("text").merge(textLines)
-                    .attr("text-anchor", "start")
-                    .attr("x",15)
-                    .attr("y", (d,i) => 15 + i * 18)
-                    .attr("dy", ".30em")
-                    .attr("font-size","14px")
-                    .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
-                    .text(d => d[1]);
-            },
-            update => {return update;},
-            exit => {return exit.remove();}
-        )
-
-        this.pointsLayer.raise();
-        this.infoLayer.raise();
-        
-        // Calculate numbers for pan location and translation boundaries
-        var translateLongLat = null;
-        var translateBounds = null;
-        var translatePoint = null;
 
         if (this.selectedState != undefined) {
             var stateData = this.statesData.filter(d => d.label == this.selectedState)[0];
@@ -254,8 +264,22 @@ class GeoVis {
         // Get points and counts per state
         this.points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
 
+        var censusStateInfo = this.censusData.filter(dataPoint => dataPoint["STATE"] == this.selectedState);
+        var statePopulation = parseInt(censusStateInfo["POPESTIMATE2019"]);
+
+        var weightedByPopulation = true;
+
         this.statesData.forEach(stateData => this.stateCounts[stateData.label] = 0);
+        this.statesData.forEach(stateData => this.weightedStateCounts[stateData.label] = 0);
+        
         this.currentData.forEach(row => this.stateCounts[this.stateMapping[row.State]] += 1);
+        this.censusData.forEach(row => {
+            this.weightedStateCounts[row["STATE"]] =
+                this.stateCounts[row["STATE"]] / row["POPESTIMATE2019"] * 1_000_000;
+        });
+
+        var counts = weightedByPopulation ? this.weightedStateCounts : this.stateCounts;
+        
         
         // Calculate global stats
         this.stateCountStats = {
@@ -265,17 +289,17 @@ class GeoVis {
             'mean': 0.0
         };
 
-        for (let [state, count] of Object.entries(this.stateCounts)) {
+        for (let [state, count] of Object.entries(counts)) {
             this.stateCountStats.total += count;
             if (count < this.stateCountStats.min) {
-                this.stateCountStats.min = count;
+                this.stateCountStats.min = parseInt(count);
             }
             if (count > this.stateCountStats.max) {
-                this.stateCountStats.max = count;
+                this.stateCountStats.max = parseInt(count);
             }
         };
 
-        this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(this.stateCounts).length
+        this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(counts).length
 
         // Create color scale for heatmap.
         // Min is slightly below zero to color states without accidents lightblue.
@@ -283,8 +307,6 @@ class GeoVis {
         var colorScale = d3.scaleLinear()
             .domain([-0.000001,this.stateCountStats.max])
             .range(["lightblue", "darkblue"]);
-
-        var stateCounts = this.stateCounts;
 
         var geographicalSvg = this.geographicalSvg;
 
@@ -296,7 +318,7 @@ class GeoVis {
         states.join(
             enter => { 
                 return enter.append("path").merge(states)
-                    .attr("fill", d => colorScale(stateCounts[d.properties.name]-0.000001))
+                    .attr("fill", d => colorScale(counts[d.properties.name]-0.000001))
                     .attr("d", path)
                     .style("stroke", "white")
                     .on('click', event => {

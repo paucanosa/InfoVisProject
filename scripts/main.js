@@ -1,4 +1,4 @@
-var promises = [d3.csv("data/preprocessed_dataset.csv"), d3.json("data/counties-albers-10m.json")];
+var promises = [d3.csv("data/preprocessed_dataset.csv"), d3.json("data/counties-albers-10m.json"), d3.csv("data/census_data.csv")];
 var numericalConditionsOrder = ["=", "&gt;", "≥", "&lt;", "≤", "x"];
 var numericalConditionsMap = {
   temperature: "Temperature(F)",
@@ -36,6 +36,7 @@ var accidentCondition = [
 Promise.all(promises).then(function (files) {
   data = files[0];
   geoData = files[1];
+  censusData = files[2];
   currentData = data;
   init();
 });
@@ -72,6 +73,7 @@ async function init() {
     data: currentData,
     statesData: statesData,
     geoData: geoData,
+    censusData: censusData,
   };
   
   initFiltersElements();
