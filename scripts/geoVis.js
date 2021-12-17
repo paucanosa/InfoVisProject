@@ -46,6 +46,7 @@ class GeoVis {
         this.sideSvg = d3.select("#geographicalsidechart");
         this.pointsLayer = this.sideSvg.append("g");
         this.infoLayer = this.sideSvg.append("g");
+        this.capitalPointsLayer = this.sideSvg.append("g");
 
         this.updateSideChart();
     }
@@ -127,9 +128,21 @@ class GeoVis {
             var statePopulation = parseInt(censusStateInfo["POPESTIMATE2019"]);
             var stateCapitalCoordinates = [censusStateInfo["long"], censusStateInfo["lat"]];
 
-            var accidentPoints = this.pointsLayer
+            var capitalPoints = this.capitalPointsLayer
                 .selectAll("circle")
-                .data(this.points, d => d)
+                .data([stateCapitalCoordinates], d => d)
+
+            capitalPoints.join(
+                enter => {
+                    return enter.append("circle").merge(capitalPoints)
+                        .attr("cx", d => this.projection(d)[0])
+                        .attr("cy", d => this.projection(d)[1])
+                        .attr("r", "" + this.pointPixelSize * 4 + "px")
+                        .attr("fill", "black");
+                },
+                update => {return update;},
+                exit => {return exit.remove();}
+            )
 
             // add accident points to the side panel
             var accidentPoints = this.pointsLayer
@@ -155,10 +168,10 @@ class GeoVis {
                 ["State", "State: " + this.selectedState],
                 ["Population", "Population: " + statePopulation.toLocaleString()],
                 ["Accidents", "Accidents: " + accidentCount.toLocaleString()],
-                ["Accidents per million inhabitants", "Accidents per million inhabitants: " + parseInt(accidentCount / statePopulation * 1_000_000)],
+                ["Accidents per million inhabitants", "Accidents per million inhabitants: " + parseInt(accidentCount / statePopulation * 1_000_000).toLocaleString()],
                 ["Accident percentage", "Accident % (regarding US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%"],
-                ["Delta from mean", "Delta from mean: " + (accidentCount - this.stateCountStats.absolute_mean).toFixed(1)],
-                ["Delta from max", "Delta from max: " + (accidentCount - this.stateCountStats.absolute_max).toFixed(1)],
+                ["Delta from mean", "Delta from mean: " + parseInt(accidentCount - this.stateCountStats.absolute_mean).toLocaleString()],
+                ["Delta from max", "Delta from max: " + parseInt(accidentCount - this.stateCountStats.absolute_max).toLocaleString()],
                 ["Avg. Severity", "Avg. Severity : " + averageSeverity.toFixed(1)],
                 ["Avg. T", "Avg. T° : " + averageTemperature.toFixed(1) + " °F"],
                 ["Avg. Humidity", "Avg. Humidity : " + averageHumidity.toFixed(1) + "%"],
@@ -166,7 +179,24 @@ class GeoVis {
                 ["Avg. wind speed", "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph"],
             ]
 
-            // infoTexts.forEach((infoText, index) => {
+            var textBackground = this.infoLayer
+                .selectAll("rect")
+                .data(['rect'], d => d)
+            
+            textBackground.join(
+                enter => {
+                    return enter.append("rect").merge(textBackground)
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", width)
+                        .attr("height", 15 + infoTexts.length * 18)
+                        .style("opacity", 0.85)
+                        .style("fill", "rgb(240,240,240)")
+                },
+                update => {return update;},
+                exit => {return exit.remove();}
+            )
+
             var textLines = this.infoLayer
                 .selectAll("text")
                 .data(infoTexts, d => d[0])
@@ -177,7 +207,7 @@ class GeoVis {
                         .attr("text-anchor", "start")
                         .attr("x",15)
                         .attr("y", (d,i) => 15 + i * 18)
-                        .attr("dy", ".30em")
+                        .attr("dy", ".35em")
                         .attr("font-size","14px")
                         .attr("font-family","Verdana, Geneva, Tahoma, sans-serif")
                         .text(d => d[1]);
@@ -185,8 +215,12 @@ class GeoVis {
                 update => {return update;},
                 exit => {return exit.remove();}
             )
-
+            
+            // Set the order of the elements, so that accident points are always above the state,
+            // the capital point is always above the accident points and
+            // the info text is always on top.
             this.pointsLayer.raise();
+            this.capitalPointsLayer.raise();
             this.infoLayer.raise();
             
             // Calculate numbers for pan location and translation boundaries
@@ -199,9 +233,9 @@ class GeoVis {
             var stateData = this.statesData.filter(d => d.label == this.selectedState)[0];
 
             translateLongLat = [stateData.longitude, stateData.latitude];
-            translatePoint = [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25];
-            translateBounds = [[this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25],
-                               [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 25]];
+            translatePoint = [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 32];
+            translateBounds = [[this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 32],
+                               [this.projection(translateLongLat)[0], this.projection(translateLongLat)[1] - 32]];
         } else {
             translateBounds = [[-width, -height], [width * 2, height * 2]];
         }
@@ -216,9 +250,13 @@ class GeoVis {
                 this.sideSvg.selectAll('path')
                     .attr('transform', event.transform);
                 
-                this.sideSvg.selectAll('circle')
+                this.pointsLayer.selectAll('circle')
                     .attr('transform', event.transform)
                     .attr("r", "" + (this.pointPixelSize / (event.transform.k ** 0.4)) + "px");
+                
+                this.capitalPointsLayer.selectAll('circle')
+                    .attr('transform', event.transform)
+                    .attr("r", "" + (this.pointPixelSize * 2 / (event.transform.k ** 0.4)) + "px");
             });
         
         // Zoom and pan to the first point if present, else go towards the center of the map
