@@ -17,6 +17,21 @@ var geoVis;
 var mySlider;
 var monthMap;
 var statesData;
+var accidentCondition = [
+  "Amenity",
+  "Bump",
+  "Crossing",
+  "Give_Way",
+  "Junction",
+  "No_Exit",
+  "Railway",
+  "Roundabout",
+  "Station",
+  "Stop",
+  "Traffic_Calming",
+  "Traffic_Signal",
+  "Turning_Loop",
+]
 
 Promise.all(promises).then(function (files) {
   data = files[0];
@@ -177,6 +192,50 @@ function initFiltersElements() {
     label.htmlFor = "f_" + statesData[i].value;
     label.className = "filter-label";
     label.innerHTML = statesData[i].label;
+    div.appendChild(input);
+    div.appendChild(label);
+    parentNode.appendChild(div);
+  }
+
+  // Inits states elements and sets a changeFilter function.
+  var parentNode = document.getElementById("causesfilters");
+  for (let i = 0; i < accidentCondition.length; ++i) {
+    var div = document.createElement("div");
+    div.className = "filters-conditional-item";
+    var input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = "f_" + accidentCondition[i];
+    input.value = "f_" + accidentCondition[i];
+    input.onclick = function () {
+      changeFilter("Cause", accidentCondition[i]);
+    };
+    var label = document.createElement("label");
+    label.htmlFor = "f_" + accidentCondition[i];
+    label.className = "filter-label";
+    label.innerHTML = accidentCondition[i];
+    div.appendChild(input);
+    div.appendChild(label);
+    parentNode.appendChild(div);
+  }
+
+  //Inits severity elements and sets a changeFilter function.
+  const severity = ['1','2','3','4']
+  const alternativeNameSeverity = ['Low', 'Medium','High','Critical']
+  var parentNode = document.getElementById("severityfilters");
+  for (let i = 0; i < severity.length; ++i) {
+    var div = document.createElement("div");
+    div.className = "filters-conditional-item";
+    var input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = "f_Severity" + severity[i];
+    input.value = "f_Severity" + severity[i];
+    input.onclick = function () {
+      changeFilter("Severity", severity[i]);
+    };
+    var label = document.createElement("label");
+    label.htmlFor = "f_" + severity[i];
+    label.className = "filter-label";
+    label.innerHTML = severity[i]+'('+alternativeNameSeverity[i]+')';
     div.appendChild(input);
     div.appendChild(label);
     parentNode.appendChild(div);

@@ -19,191 +19,14 @@
       </div>
       <div class="filter-type-container">
         <p class="filter-type-title">Accident cause:</p>
-        <div class="filters-conditional-container">
-          <!-- TODO: CREATE THESE ITEMS WITH A JS FUNCTION.  -->
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Bump"
-              name="f_Bump"
-              value="f_Bump"
-              onclick="changeFilter('Cause','Bump');"
-            />
-            <label for="f_Bump" class="filter-label"> Bump</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Amenity"
-              name="f_Amenity"
-              value="f_Amenity"
-              onclick="changeFilter('Cause','Amenity');"
-            />
-            <label for="f_Amenity" class="filter-label"> Amenity</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Crossing"
-              name="f_Crossing"
-              value="f_Crossing"
-              onclick="changeFilter('Cause','Crossing');"
-            />
-            <label for="f_Crossing" class="filter-label"> Crossing</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Give_Way"
-              name="f_Give_Way"
-              value="f_Give_Way"
-              onclick="changeFilter('Cause','Give_Way');"
-            />
-            <label for="f_Give_Way" class="filter-label"> Give Way</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Junction"
-              name="f_Junction"
-              value="f_Junction"
-              onclick="changeFilter('Cause','Junction');"
-            />
-            <label for="f_Junction" class="filter-label"> Junction</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_No_Exit"
-              name="f_No_Exit"
-              value="f_No_Exit"
-              onclick="changeFilter('Cause','No_Exit');"
-            />
-            <label for="f_No_Exit" class="filter-label"> No Exit</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Railway"
-              name="f_Railway"
-              value="f_Railway"
-              onclick="changeFilter('Cause','Railway');"
-            />
-            <label for="f_Railway" class="filter-label"> Railway</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Roundabout"
-              name="f_Roundabout"
-              value="f_Roundabout"
-              onclick="changeFilter('Cause','Roundabout');"
-            />
-            <label for="f_Roundabout" class="filter-label"> Roundabout</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Station"
-              name="f_Station"
-              value="f_Station"
-              onclick="changeFilter('Cause','Station');"
-            />
-            <label for="f_Station" class="filter-label"> Station</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Stop"
-              name="f_Stop"
-              value="f_Stop"
-              onclick="changeFilter('Cause','Stop');"
-            />
-            <label for="f_Stop" class="filter-label"> Stop</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Traffic_Calming"
-              name="f_Traffic_Calming"
-              value="f_Traffic_Calming"
-              onclick="changeFilter('Cause','Traffic_Calming');"
-            />
-            <label for="f_Traffic_Calming" class="filter-label">
-              Traffic Calming</label
-            >
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Traffic_Signal"
-              name="f_Traffic_Signal"
-              value="f_Traffic_Signal"
-              onclick="changeFilter('Cause','Traffic_Signal');"
-            />
-            <label for="f_Traffic_Signal" class="filter-label">
-              Traffic Signal</label
-            >
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Turning_Loop"
-              name="f_Turning_Loop"
-              value="f_Turning_Loop"
-              onclick="changeFilter('Cause','Turning_Loop');"
-            />
-            <label for="f_Turning_Loop" class="filter-label">
-              Turning Loop</label
-            >
-          </div>
+        <div id="causesfilters" class="filters-conditional-container">
         </div>
       </div>
 
       <div class="separator"></div>
       <div class="filter-type-container">
         <p class="filter-type-title">Severity:</p>
-        <div class="filters-conditional-container">
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Severity1"
-              name="f_Severity1"
-              value="f_Severity1"
-              onclick="changeFilter('Severity','1');"
-            />
-            <label for="f_Severity1" class="filter-label"> 1 (Low)</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Severity2"
-              name="f_Severity2"
-              value="f_Severity2"
-              onclick="changeFilter('Severity','2');"
-            />
-            <label for="f_Severity2" class="filter-label"> 2 (Medium)</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Severity3"
-              name="f_Severity3"
-              value="f_Severity3"
-              onclick="changeFilter('Severity','3');"
-            />
-            <label for="f_Severity3" class="filter-label"> 3 (High)</label>
-          </div>
-          <div class="filters-conditional-item">
-            <input
-              type="checkbox"
-              id="f_Severity3"
-              name="f_Severity4"
-              value="f_Severity4"
-              onclick="changeFilter('Severity','4');"
-            />
-            <label for="f_Severity3" class="filter-label"> 4 (Critical)</label>
-          </div>
+        <div id="severityfilters" class="filters-conditional-container">
         </div>
       </div>
 
@@ -403,13 +226,6 @@
               <button id="timebuttonNov" class="time-button" onclick="setUniqueMonthFilter('Nov')">Nov</button>
               <button id="timebuttonDec" class="time-button" onclick="setUniqueMonthFilter('Dec')">Dec</button>
         </div>
-          <!-- <button class="filters-apply-button button-visualization" onclick="generateTimeProgress()" title="Accept requested meeting.">
-            Run animation
-          </button>
-          <p class="info-icon">
-            ⓘ
-            <span class="tooltiptext">Visualization performs better with filtered data</span>
-          </p> -->
       </div>
     </div>
     <div id="basic-container" class="basic-visualization">
@@ -439,7 +255,6 @@
       <div class="geo-map-separator"></div>
       <svg id="geographicalsidechart" width="400" height="600"></svg>
     </div>
-    <!-- <script type="module" src="scripts/logicData.js"></script> -->
     <script src="scripts/basicVis.js"></script>
     <script src="scripts/geoVis.js"></script>
     <script src="scripts/main.js"></script>
