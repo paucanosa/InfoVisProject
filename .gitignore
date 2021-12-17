@@ -2,4 +2,5 @@ data/counties-albers-10m.json
 data/main.csv
 data/main*.csv
 data/preprocessed_dataset.csv
+data/uscities.csv
 scripts/logicData.js
