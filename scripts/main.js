@@ -1,5 +1,5 @@
 var promises = [
-  d3.csv("data/2017.csv"),
+  d3.csv("data/data.csv"),
   d3.json("data/counties-albers-10m.json"),
   d3.csv("data/census_data.csv"),
 ];
