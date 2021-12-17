@@ -211,7 +211,6 @@
 .geo-map-separator {
   min-height: 100%;
   border-right: solid 2px lightgray;
-  width: 10px;
 }
 
 .separator {
@@ -378,6 +377,17 @@
   justify-content: center;
   color: rgb(71, 71, 71);
   margin-right: 20px;
+}
+
+.width-full{
+  width: 100% !important;
+}
+
+.button-swap-ratio{
+  margin-left: 25px;
+  cursor: pointer;
+  height: 25px;
+  margin-bottom: 2px;
 }
 
 .button-swap-time:hover{

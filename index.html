@@ -231,9 +231,9 @@
     <div id="basic-container" class="basic-visualization">
       <div class="basic-visualization__duration-container">
         <p class="chart-title">Accidents per day of the week</p>
-        <div id="histogramchart" class="basic-visualization__histogram"></div>
+        <div id="dayofweekchart" class="basic-visualization__histogram"></div>
       </div>
-      <div id="durationchart" class="basic-visualization__customization-container">
+      <div id="conditionschart" class="basic-visualization__customization-container">
         <p class="chart-title">Conditions involved</p>
       </div>
     </div>
@@ -252,9 +252,9 @@
    
     <div class="geographical-visualization-container">
       <div id="severitychart" class="basic-visualization__severity-container">
-        <p class="time-filter-title" id="geo-title">Heatmap accidents per state</p>
-        <div class="button-swap-time-container">
-          <p class="button-swap-time" id="togglegeoweightedbutton" onclick="toggleGeoWeightedMethod()">Per capita</p>
+        <div class="time-filter-title width-full">
+          <p id="geo-title">Heatmap accidents per state</p>
+          <p class="button-swap-time button-swap-ratio" id="togglegeoweightedbutton" onclick="toggleGeoWeightedMethod()">Absolute</p>
         </div>
         <svg id="geographicalchart" width="1000" height="600"></svg>
       </div>

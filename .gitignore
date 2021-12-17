@@ -1,5 +1,10 @@
 data/counties-albers-10m.json
 data/main.csv
+data/2016.csv
+data/2017.csv
+data/2018.csv
+data/2019.csv
+data/2020.csv
 data/main*.csv
 data/preprocessed_dataset.csv
 scripts/logicData.js
