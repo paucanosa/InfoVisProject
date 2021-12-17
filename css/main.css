@@ -52,7 +52,7 @@
   align-items: center;
 }
 
-.basic-visualization__histogram {
+.basic-visualization__barplot {
   height: 100%;
   width: 100%;
 }
