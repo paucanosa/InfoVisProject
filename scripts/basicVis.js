@@ -103,7 +103,7 @@ class BasicVis {
 
     // Call create functions
     this.createPieChart();
-    this.createHistogramChart();
+    this.createDayOfWeekChart();
     this.createConditionsplot();
     this.createWeatherPlot();
   }
@@ -119,7 +119,7 @@ class BasicVis {
   }
 
   /**
-   * Initializes all the duration piechart properties and creates its corresponding svg element.
+   * Initializes all the severity piechart properties and creates its corresponding svg element.
    *
    */
   createPieChart() {
@@ -212,9 +212,9 @@ class BasicVis {
   }
 
   /**
-   * Updates the duration piechart with the current data.
+   * Updates the severity piechart with the current data.
    *
-   * @param {object} svgInput D3.js svg object containing the duration piechart.
+   * @param {object} svgInput D3.js svg object containing the severity piechart.
    */
   updatePieChart(svgInput) {
     // set the dimensions and margins of the graph
@@ -343,7 +343,7 @@ class BasicVis {
    *
    */
   updateCharts() {
-    this.updateHistogramChart();
+    this.updateDayOfWeekChart();
     this.updatePieChart();
     this.updateConditionsplot();
     this.updateWeatherPlot();
@@ -353,10 +353,10 @@ class BasicVis {
    * Initializes all accidents per day of the week graph properties and creates its corresponding svg element.
    *
    */
-  createHistogramChart() {
+  createDayOfWeekChart() {
     // Creates the svg node and initializes the sizes.
     const svg = d3
-      .select("#histogramchart")
+      .select("#dayofweekchart")
       .append("svg")
       .attr(
         "width",
@@ -399,7 +399,7 @@ class BasicVis {
     this.yHistogram = d3.scaleLinear().range([this.heightHistogram, 0]);
     this.yAxisHistogram = svg.append("g").attr("class", "myYaxis");
 
-    this.updateHistogramChart(svg);
+    this.updateDayOfWeekChart(svg);
   }
 
   /**
@@ -407,7 +407,7 @@ class BasicVis {
    *
    * @param {object} svgInput D3.js svg object containing the accidents per day of the week barplot.
    */
-  updateHistogramChart(svgInput) {
+  updateDayOfWeekChart(svgInput) {
     //Retrieves the day of each accident
     var parseDate = d3.timeParse("%Y-%m-%d");
     const numberToWeek = this.numberToWeek;
@@ -426,7 +426,7 @@ class BasicVis {
       };
     });
 
-    if (!svgInput) var svg = d3.select("#histogramchart").select("svg");
+    if (!svgInput) var svg = d3.select("#dayofweekchart").select("svg");
     else var svg = svgInput;
 
     // Updates y Axis for the new range of values
@@ -448,7 +448,7 @@ class BasicVis {
     d3.select("#histtooltip").remove()
 
     // Create tooltip    
-    var tooltip = d3.select("#histogramchart")
+    var tooltip = d3.select("#dayofweekchart")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -511,7 +511,7 @@ class BasicVis {
   createConditionsplot() {
     // Creates the svg node and initializes the sizes.
     const svg = d3
-      .select("#durationchart")
+      .select("#conditionschart")
       .append("svg")
       .attr(
         "width",
@@ -584,7 +584,7 @@ class BasicVis {
       );
     });
 
-    if (!svgInput) var svg = d3.select("#durationchart").select("svg");
+    if (!svgInput) var svg = d3.select("#conditionschart").select("svg");
     else var svg = svgInput;
 
     // Updates y Axis for the new range of values
@@ -606,7 +606,7 @@ class BasicVis {
     d3.select("#conditiontooltip").remove()
 
     // Add tooltip
-    var tooltip = d3.select("#durationchart")
+    var tooltip = d3.select("#conditionschart")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
