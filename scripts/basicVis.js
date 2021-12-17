@@ -101,17 +101,27 @@ class BasicVis {
     this.heightWeatherplot =
       275 - this.marginWeatherplot.top - this.marginWeatherplot.bottom;
 
+    // Call create functions
     this.createPieChart();
     this.createHistogramChart();
     this.createConditionsplot();
     this.createWeatherPlot();
   }
 
+  /**
+   * Updates the currently selected data to the filtered data.
+   *
+   * @param {array} filteredData Array containing the data to be updated.
+   */
   updateData(filteredData) {
     this.currentData = filteredData;
     this.updateCharts();
   }
 
+  /**
+   * Initializes all the duration piechart properties and creates its corresponding svg element.
+   *
+   */
   createPieChart() {
     // set the dimensions and margins of the graph
     const width = 250,
@@ -131,6 +141,7 @@ class BasicVis {
       .append("g")
       .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
+    // Create piechart legend
     const legend = d3
       .select("#severitychart")
       .append("svg")
@@ -200,7 +211,12 @@ class BasicVis {
     this.updatePieChart(svg);
   }
 
-  updatePieChart(svg) {
+  /**
+   * Updates the duration piechart with the current data.
+   *
+   * @param {object} svgInput D3.js svg object containing the duration piechart.
+   */
+  updatePieChart(svgInput) {
     // set the dimensions and margins of the graph
     const width = 300,
       height = 300,
@@ -209,7 +225,8 @@ class BasicVis {
     // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
     const radius = Math.min(width, height) / 2 - margin;
 
-    if (!svg) var svg = d3.select("#severitychart").select("svg");
+    if (!svgInput) var svg = d3.select("#severitychart").select("svg");
+    else var svg = svgInput;
 
     const data = {
       1: this.currentData.filter(function (d) {
@@ -282,8 +299,10 @@ class BasicVis {
       .style("fill", "#FFFFFF")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
     
+    // Remove previous tooltip
     d3.select('#piechart_tooltip').remove()
 
+    // Create tooltip
     var tooltip = d3
       .select("#severitychart")
       .append("div")
@@ -301,6 +320,7 @@ class BasicVis {
       tooltip.append("div").text("High: " + data[3]);
       tooltip.append("div").text("Critical: " + data[4]);
 
+    // Add tooltip mouse actions
     svg
     .on("mouseover", function(event){
       var severitychart_rect = document
@@ -318,6 +338,10 @@ class BasicVis {
     });
   }
 
+  /**
+   * Updates all charts by calling all of the update functions.
+   *
+   */
   updateCharts() {
     this.updateHistogramChart();
     this.updatePieChart();
@@ -325,6 +349,10 @@ class BasicVis {
     this.updateWeatherPlot();
   }
 
+  /**
+   * Initializes all accidents per day of the week graph properties and creates its corresponding svg element.
+   *
+   */
   createHistogramChart() {
     // Creates the svg node and initializes the sizes.
     const svg = d3
@@ -374,6 +402,11 @@ class BasicVis {
     this.updateHistogramChart(svg);
   }
 
+  /**
+   * Updates the accidents per day of the week barplot with the current data.
+   *
+   * @param {object} svgInput D3.js svg object containing the accidents per day of the week barplot.
+   */
   updateHistogramChart(svgInput) {
     //Retrieves the day of each accident
     var parseDate = d3.timeParse("%Y-%m-%d");
@@ -411,7 +444,10 @@ class BasicVis {
       .duration(1000)
       .call(d3.axisLeft(this.yHistogram));
     
+    // Delete previous tooltip
     d3.select("#histtooltip").remove()
+
+    // Create tooltip    
     var tooltip = d3.select("#histogramchart")
       .append("div")
       .style("opacity", 0)
@@ -461,12 +497,17 @@ class BasicVis {
       .attr("height", (d) => this.heightHistogram - this.yHistogram(d.value))
       .attr("fill", "#69b3a2")
     
+    // Add tooltip mouse events
     svg.selectAll("rect").data(chartData)
     .on("mouseover", mouseover)
     .on("mouseout", mouseout)
     .on("mousemove", mousemove)
   }
 
+  /**
+   * Initializes all conditions barplot properties and creates its corresponding svg element.
+   *
+   */
   createConditionsplot() {
     // Creates the svg node and initializes the sizes.
     const svg = d3
@@ -510,6 +551,11 @@ class BasicVis {
     this.updateConditionsplot(svg);
   }
 
+  /**
+   * Updates the conditions barplot with the current data.
+   *
+   * @param {object} svgInput D3.js svg object containing the conditions barplot.
+   */
   updateConditionsplot(svgInput) {
     const currentData = this.currentData;
     //Adds the number of conditions on each accident
@@ -556,7 +602,10 @@ class BasicVis {
       .duration(1000)
       .call(d3.axisLeft(this.yConditionsplot));
 
+    // Remove previous tooltip
     d3.select("#conditiontooltip").remove()
+
+    // Add tooltip
     var tooltip = d3.select("#durationchart")
       .append("div")
       .style("opacity", 0)
@@ -609,12 +658,17 @@ class BasicVis {
       )
       .attr("fill", "#69b3a2");
     
+    // Add tooltip mouse events
     svg.selectAll("rect").data(chartData)
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
       .on("mousemove", mousemove)
   }
 
+  /**
+   * Initializes all weather conditions barplot properties and creates its corresponding svg element.
+   *
+   */
   createWeatherPlot() {
     // Creates the svg node and initializes the sizes.
     const svg = d3
@@ -657,6 +711,11 @@ class BasicVis {
     this.updateWeatherPlot(svg);
   }
 
+  /**
+   * Updates the weather conditions barplot with the current data.
+   *
+   * @param {object} svgInput D3.js svg object containing the weather conditions barplot.
+   */
   async updateWeatherPlot(svgInput) {
     const currentData = this.currentData;
     //Adds the number of conditions on each accident
@@ -712,7 +771,10 @@ class BasicVis {
       .duration(1000)
       .call(d3.axisLeft(this.yWeatherplot));
 
+    // Remove previous tooltip
     d3.select("#weathertooltip").remove()
+
+    // Add tooltip
     var tooltip = d3.select("#weatherchart")
       .append("div")
       .style("opacity", 0)
@@ -765,6 +827,7 @@ class BasicVis {
       )
       .attr("fill", "#69b3a2");
     
+    // Add tooltip mouse actions
     svg.selectAll("rect").data(chartData)
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
