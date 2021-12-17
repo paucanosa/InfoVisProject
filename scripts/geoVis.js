@@ -1,23 +1,27 @@
 class GeoVis {
-
     constructor(params){
+        // Data needed to calculate everything
         this.currentData = params.data;
         this.statesData = params.statesData;
         this.geoData = params.geoData;
         this.censusData = params.censusData;
 
+        // Used to toggle absolute or weighted heat map
         this.weightedByPopulation = false;
 
+        // Variables used to keep track of counts and stats
         this.stateMapping = {};
         this.stateCounts = {};
         this.weightedStateCounts = {};
         this.stateCountStats = {};
 
+        // Selected state and points to be rendered in the side chart
         this.selectedState = null;
         this.selectedStatePoints = [];
 
         this.statesData.forEach(state => this.stateMapping[state.value] = state.label)
 
+        // D3 projection and layers
         this.projection = null;
         this.pointPixelSize = 1.5;
 
@@ -32,16 +36,27 @@ class GeoVis {
         this.createSideChart();
     }
 
+    /**
+     * Updates the current data stored in this component and notifies the charts.
+     * 
+     * @param {array} filteredData Array containing the data to be updated.
+     */
     updateData(filteredData){
         this.currentData = filteredData;
         this.updateCharts();
     }
 
+    /**
+     * Updates the geographical and side charts
+     */
     updateCharts(){
         this.updateGeographicalChart();
         this.updateSideChart();
     }
 
+    /**
+     * Initializer for the side chart.
+     */
     createSideChart(){
         this.sideSvg = d3.select("#geographicalsidechart");
         this.pointsLayer = this.sideSvg.append("g");
@@ -51,6 +66,10 @@ class GeoVis {
         this.updateSideChart();
     }
 
+    /**
+     * Update logic for the side chart. Contains logic for rendering the selected state,
+     * quantizing and plotting accidents as points and calculating the textual info.
+     */
     updateSideChart(){
         const width = +this.sideSvg.attr("width"),
             height = +this.sideSvg.attr("height");
@@ -109,7 +128,7 @@ class GeoVis {
             var totalWindSpeed = dataForStateWithWindSpeed.map(d => d["Wind_Speed(mph)"]).reduce((a, b) => a + parseFloat(b), 0);
             var averageWindSpeed = dataForStateWithWindSpeed.length > 0 ? totalWindSpeed / dataForStateWithWindSpeed.length : 0;
 
-            // Quantize point coordinates and remove duplicates for performance
+            // Quantize point coordinates and remove duplicates for performance improvements
             var pointCoordinatesBitmap = {};
             
             this.points = this.points.filter(d => {
@@ -161,7 +180,7 @@ class GeoVis {
                 exit => {return exit.remove();}
             )
 
-            // Render current info text
+            // Calculate current info text
             var infoTexts = [];
 
             infoTexts = [
@@ -179,6 +198,7 @@ class GeoVis {
                 ["Avg. wind speed", "Avg. wind speed: " + averageWindSpeed.toFixed(1) + " mph"],
             ]
 
+            // Render transparent background to make textual information more readable
             var textBackground = this.infoLayer
                 .selectAll("rect")
                 .data(['rect'], d => d)
@@ -197,6 +217,7 @@ class GeoVis {
                 exit => {return exit.remove();}
             )
 
+            // Render and update textual info on screen
             var textLines = this.infoLayer
                 .selectAll("text")
                 .data(infoTexts, d => d[0])
@@ -229,6 +250,7 @@ class GeoVis {
             var translatePoint = null;
         }
 
+        // Define point to translate to and user allowed translation bounds (currently manual panning is disabled)
         if (this.selectedState != undefined) {
             var stateData = this.statesData.filter(d => d.label == this.selectedState)[0];
 
@@ -285,6 +307,9 @@ class GeoVis {
         this.sideSvg.call(zoom);
     }
 
+    /**
+     * Initializer for the geographical chart.
+     */
     createGeographicalChart(){
         this.geographicalSvg = d3.select("#geographicalchart");
 
@@ -296,7 +321,10 @@ class GeoVis {
         this.updateGeographicalChart();
     }
 
-
+    /**
+     * Update logic for the side chart. Contains logic for rendering each state and
+     * aggregating the number of accidents to color the states, along with rendering the legend.
+     */
     updateGeographicalChart(){
         const width = +this.geographicalSvg.attr("width"),
             height = +this.geographicalSvg.attr("height");
@@ -330,6 +358,7 @@ class GeoVis {
             'absolute_mean': 0.0,
         };
 
+        // Calculate and store the stats of either the absolute or weighted accident counts
         for (let [state, count] of Object.entries(counts)) {
             this.stateCountStats.total += count;
             if (count < this.stateCountStats.min) {
@@ -339,6 +368,8 @@ class GeoVis {
                 this.stateCountStats.max = parseInt(count);
             }
         };
+
+        this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(counts).length
 
         // Also store the absolute counts as we need them in the sidepanel later
         for (let [state, count] of Object.entries(this.stateCounts)) {
@@ -351,7 +382,6 @@ class GeoVis {
             }
         };
 
-        this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(counts).length
         this.stateCountStats.absolute_mean = parseFloat(this.stateCountStats.absolute_total) / Object.entries(this.stateCounts).length
 
         // Create color scale for heatmap.
@@ -426,6 +456,7 @@ class GeoVis {
         var legendText = this.geographicalSvg
             .selectAll("text")
             .data(["start", "end"], d => d)
+
         legendText.join(
             enter => {
                 return enter.append("text").merge(legendText)
