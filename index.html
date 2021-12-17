@@ -10,9 +10,9 @@
   </head>
 
   <body>
-    <h1 class="main-title">InfoVis Project - US Car Accidents 2019</h1>
+    <h1 class="main-title">InfoVis Project - US Car Accidents 2017</h1>
 
-    <div id="mainfilters" class="filters filters-disabled" >
+    <div id="mainfilters" class="filters accordion-disabled" >
       <div class="filters-title-container button-accordion" onclick="changeFilterAccordion()">
         <p class="filters-title">Filters</p>
         <p id="filteraccordionicon"class="filters-title--right">+</p>
@@ -228,24 +228,24 @@
         </div>
       </div>
     </div>
-    <div id="basic-container" class="basic-visualization">
+    <div id="basiccontainerWeek" class="basic-visualization">
       <div class="basic-visualization__duration-container">
-        <p class="chart-title">Accidents per day of the week</p>
+        <p class="chart-title pointer hover-title" onclick="changeAccordionBasicVis('Week')">Accidents per day of the week</p>
         <div id="dayofweekchart" class="basic-visualization__histogram"></div>
       </div>
       <div id="conditionschart" class="basic-visualization__customization-container">
-        <p class="chart-title">Conditions involved</p>
+        <p class="chart-title pointer hover-title" onclick="changeAccordionBasicVis('Week')">Conditions involved</p>
       </div>
     </div>
 
-    <div id="basic-container" class="basic-visualization">
+    <div id="basiccontainerSeverity" class="basic-visualization">
       <div class="basic-visualization__duration-container">
         <div id="severitychart" class="basic-visualization__severity-container">
-          <p class="chart-title">Severity</p>
+          <p id="b"class="chart-title pointer hover-title" onclick="changeAccordionBasicVis('Severity')">Severity</p>
         </div>
       </div>
       <div id="weatherchart" class="basic-visualization__customization-container">
-        <p class="chart-title">Weather conditions</p>
+        <p id="a" class="chart-title pointer hover-title" onclick="changeAccordionBasicVis('Severity')">Weather conditions</p>
       </div>
     </div>
 

@@ -24,9 +24,10 @@
   transition: all 0.75s;
 }
 
-.filters-disabled {
-  height: 34px;
+.accordion-disabled {
+  height: 34px !important;
   transition: all 0.75s;
+  overflow: hidden;
 }
 
 .basic-visualization {
@@ -41,6 +42,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.75s;
+  overflow: hidden;
 }
 
 .basic-visualization__duration-container {
@@ -379,18 +382,18 @@
   margin-right: 20px;
 }
 
-.width-full{
+.width-full {
   width: 100% !important;
 }
 
-.button-swap-ratio{
+.button-swap-ratio {
   margin-left: 25px;
   cursor: pointer;
   height: 25px;
   margin-bottom: 2px;
 }
 
-.button-swap-time:hover{
+.button-swap-time:hover {
   border-width: 2px;
 }
 
@@ -412,10 +415,9 @@
   margin-bottom: 5px;
 }
 
-
 /* Time buttons */
 
-.time-buttons-container{
+.time-buttons-container {
   display: flex;
   align-items: center;
   height: 47px;
@@ -425,7 +427,7 @@
   width: calc(100% - 40px);
 }
 
-.time-button{
+.time-button {
   width: 100px;
   background-color: whitesmoke;
   height: 25px;
@@ -439,17 +441,25 @@
   animation: all 0.3s;
 }
 
-.time-button-active{
+.time-button-active {
   background-color: #69b3a2;
   color: white;
   animation: all 0.3s;
 }
 
 rect:hover {
-  fill: rgb(71, 71, 71)
+  fill: rgb(71, 71, 71);
 }
 
-
-.display-none{
+.display-none {
   display: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.hover-title:hover {
+  background-color: rgb(185, 185, 185);
+  transition: all 0.5;
 }

@@ -82,7 +82,6 @@ class BasicVis {
     this.heightConditionsplot =
       275 - this.marginConditionsplot.top - this.marginConditionsplot.bottom;
 
-
     //Boxplot data
     this.xWeatherplot = null;
     this.yWeatherplot = null;
@@ -93,7 +92,7 @@ class BasicVis {
     this.marginWeatherplot = {
       top: 10,
       right: 5,
-      bottom: 40,
+      bottom: 50,
       left: 40,
     };
     this.widthWeatherplot =
@@ -298,9 +297,9 @@ class BasicVis {
       .style("font-size", "12px")
       .style("fill", "#FFFFFF")
       .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
-    
+
     // Remove previous tooltip
-    d3.select('#piechart_tooltip').remove()
+    d3.select("#piechart_tooltip").remove();
 
     // Create tooltip
     var tooltip = d3
@@ -313,29 +312,29 @@ class BasicVis {
       .style("padding", "15px")
       .style("border-radius", "5px")
       .style("color", "white")
-      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
 
-      tooltip.append("div").text("Low: " + data[1]);
-      tooltip.append("div").text("Medium: " + data[2]);
-      tooltip.append("div").text("High: " + data[3]);
-      tooltip.append("div").text("Critical: " + data[4]);
+    tooltip.append("div").text("Low: " + data[1]);
+    tooltip.append("div").text("Medium: " + data[2]);
+    tooltip.append("div").text("High: " + data[3]);
+    tooltip.append("div").text("Critical: " + data[4]);
 
     // Add tooltip mouse actions
     svg
-    .on("mouseover", function(event){
-      var severitychart_rect = document
-      .getElementById("severitychart")
-      .getBoundingClientRect();
-      var right = severitychart_rect.right - 550;
-      var top = severitychart_rect.top + 100;
-      tooltip
-      .style("visibility", "visible")
-      .style("left", right + "px")
-      .style("top", top + "px")
-    })
-    .on("mouseout", function () {
-      tooltip.style("visibility", "hidden");
-    });
+      .on("mouseover", function (event) {
+        var severitychart_rect = document
+          .getElementById("severitychart")
+          .getBoundingClientRect();
+        var right = severitychart_rect.right - 550;
+        var top = severitychart_rect.top + 100;
+        tooltip
+          .style("visibility", "visible")
+          .style("left", right + "px")
+          .style("top", top + "px");
+      })
+      .on("mouseout", function () {
+        tooltip.style("visibility", "hidden");
+      });
   }
 
   /**
@@ -443,12 +442,13 @@ class BasicVis {
       .transition()
       .duration(1000)
       .call(d3.axisLeft(this.yHistogram));
-    
-    // Delete previous tooltip
-    d3.select("#histtooltip").remove()
 
-    // Create tooltip    
-    var tooltip = d3.select("#dayofweekchart")
+    // Delete previous tooltip
+    d3.select("#histtooltip").remove();
+
+    // Create tooltip
+    var tooltip = d3
+      .select("#dayofweekchart")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -459,29 +459,31 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
-      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
 
-    const mouseover = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 20 + "px")
-    }
+    const mouseover = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 20 + "px");
+    };
 
-    const mousemove = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 10 + "px")
-    }
+    const mousemove = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 10 + "px");
+    };
 
-    const mouseout = function(event, d) {
-      tooltip.style("opacity", 0)
-    }
+    const mouseout = function (event, d) {
+      tooltip.style("opacity", 0);
+    };
 
     // Updates the bars
     var bars = svg.selectAll("rect").data(chartData);
@@ -495,13 +497,15 @@ class BasicVis {
       .attr("y", (d) => this.yHistogram(d.value))
       .attr("width", this.xHistogram.bandwidth())
       .attr("height", (d) => this.heightHistogram - this.yHistogram(d.value))
-      .attr("fill", "#69b3a2")
-    
+      .attr("fill", "#69b3a2");
+
     // Add tooltip mouse events
-    svg.selectAll("rect").data(chartData)
-    .on("mouseover", mouseover)
-    .on("mouseout", mouseout)
-    .on("mousemove", mousemove)
+    svg
+      .selectAll("rect")
+      .data(chartData)
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout)
+      .on("mousemove", mousemove);
   }
 
   /**
@@ -587,7 +591,22 @@ class BasicVis {
     if (!svgInput) var svg = d3.select("#conditionschart").select("svg");
     else var svg = svgInput;
 
+    chartData.sort((a, b) => {
+      return b.value - a.value;
+    });
     // Updates y Axis for the new range of values
+    this.xConditionsplot.domain(
+      chartData.map((item) => {
+        return item.cause;
+      })
+    );
+    this.xAxisConditionsplot.call(d3.axisBottom(this.xConditionsplot));
+    this.xAxisConditionsplot
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-15)");
     this.yConditionsplot.domain([
       0,
       Math.max.apply(
@@ -603,10 +622,11 @@ class BasicVis {
       .call(d3.axisLeft(this.yConditionsplot));
 
     // Remove previous tooltip
-    d3.select("#conditiontooltip").remove()
+    d3.select("#conditiontooltip").remove();
 
     // Add tooltip
-    var tooltip = d3.select("#conditionschart")
+    var tooltip = d3
+      .select("#conditionschart")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -617,29 +637,31 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
-      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
 
-    const mouseover = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 20 + "px")
-    }
+    const mouseover = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 20 + "px");
+    };
 
-    const mousemove = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 10 + "px")
-    }
+    const mousemove = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 10 + "px");
+    };
 
-    const mouseout = function(event, d) {
-      tooltip.style("opacity", 0)
-    }
+    const mouseout = function (event, d) {
+      tooltip.style("opacity", 0);
+    };
 
     // Updates the bars
     var bars = svg.selectAll("rect").data(chartData);
@@ -657,12 +679,14 @@ class BasicVis {
         (d) => this.heightConditionsplot - this.yConditionsplot(d.value)
       )
       .attr("fill", "#69b3a2");
-    
+
     // Add tooltip mouse events
-    svg.selectAll("rect").data(chartData)
+    svg
+      .selectAll("rect")
+      .data(chartData)
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
-      .on("mousemove", mousemove)
+      .on("mousemove", mousemove);
   }
 
   /**
@@ -703,9 +727,7 @@ class BasicVis {
     this.xAxisWeatherplot.call(d3.axisBottom(this.xWeatherplot));
 
     // Defines Y axis
-    this.yWeatherplot = d3
-      .scaleLinear()
-      .range([this.heightWeatherplot, 0]);
+    this.yWeatherplot = d3.scaleLinear().range([this.heightWeatherplot, 0]);
     this.yAxisWeatherplot = svg.append("g").attr("class", "myYaxis");
 
     this.updateWeatherPlot(svg);
@@ -727,34 +749,41 @@ class BasicVis {
         return mockResponses.json();
       })
       .then((data) => {
-        weatherConditions = data["weatherConditions"]
+        weatherConditions = data["weatherConditions"];
       });
-    
+
     weatherConditions.forEach((condition) => {
       chartData.push({ weather: condition, value: 0 });
     });
     currentData.forEach((element) => {
-      if(element['Weather_Condition']!='')
-      chartData[
-        chartData.findIndex((item) => item.weather == element['Weather_Condition'])
-      ].value += 1
+      if (element["Weather_Condition"] != "")
+        chartData[
+          chartData.findIndex(
+            (item) => item.weather == element["Weather_Condition"]
+          )
+        ].value += 1;
     });
     chartData.sort((a, b) => {
       return b.value - a.value;
     });
-    chartData = chartData.splice(0,15);
+    chartData = chartData.splice(0, 15);
 
     if (!svgInput) var svg = d3.select("#weatherchart").select("svg");
     else var svg = svgInput;
 
     //Updates x Axis for the new 15 categories of weather
-    this.xWeatherplot.domain(chartData.map(item=>{return item.weather}));
+    this.xWeatherplot.domain(
+      chartData.map((item) => {
+        return item.weather;
+      })
+    );
     this.xAxisWeatherplot.call(d3.axisBottom(this.xWeatherplot));
-    this.xAxisWeatherplot.selectAll("text")  
-    .style("text-anchor", "end")
-    .attr("dx", "-.8em")
-    .attr("dy", ".15em")
-    .attr("transform", "rotate(-15)");
+    this.xAxisWeatherplot
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-15)");
 
     // Updates y Axis for the new range of values
     this.yWeatherplot.domain([
@@ -772,10 +801,11 @@ class BasicVis {
       .call(d3.axisLeft(this.yWeatherplot));
 
     // Remove previous tooltip
-    d3.select("#weathertooltip").remove()
+    d3.select("#weathertooltip").remove();
 
     // Add tooltip
-    var tooltip = d3.select("#weatherchart")
+    var tooltip = d3
+      .select("#weatherchart")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -786,29 +816,31 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
-      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
+      .style("font-family", "Verdana, Geneva, Tahoma, sans-serif");
 
-    const mouseover = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 20 + "px")
-    }
+    const mouseover = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 20 + "px");
+    };
 
-    const mousemove = function(event, d) {
-      var width = tooltip.node().getBoundingClientRect().width
-      var height = tooltip.node().getBoundingClientRect().height
-      tooltip.html(d.value)
-      .style("opacity", 1)
-      .style("left", event.clientX - width/2 + "px")
-      .style("top", event.clientY - height - 10 + "px")
-    }
+    const mousemove = function (event, d) {
+      var width = tooltip.node().getBoundingClientRect().width;
+      var height = tooltip.node().getBoundingClientRect().height;
+      tooltip
+        .html(d.value)
+        .style("opacity", 1)
+        .style("left", event.clientX - width / 2 + "px")
+        .style("top", event.clientY - height - 10 + "px");
+    };
 
-    const mouseout = function(event, d) {
-      tooltip.style("opacity", 0)
-    }
+    const mouseout = function (event, d) {
+      tooltip.style("opacity", 0);
+    };
 
     // Updates the bars
     var bars = svg.selectAll("rect").data(chartData);
@@ -826,11 +858,13 @@ class BasicVis {
         (d) => this.heightWeatherplot - this.yWeatherplot(d.value)
       )
       .attr("fill", "#69b3a2");
-    
+
     // Add tooltip mouse actions
-    svg.selectAll("rect").data(chartData)
+    svg
+      .selectAll("rect")
+      .data(chartData)
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
-      .on("mousemove", mousemove)
+      .on("mousemove", mousemove);
   }
 }
