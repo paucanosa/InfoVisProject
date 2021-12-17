@@ -325,14 +325,15 @@ class GeoVis {
             .attr('offset', (_, index) => {
                 return index * 100 + '%';
             })
-        
+
+        // Add legend using the gradient objects
         var legend = this.geographicalSvg
             .selectAll("rect")
             .data(['legend'], d => d)
         
         legend.join(
             enter => {
-                return enter.append("rect")
+                return enter.append("rect").merge(legend)
                     .attr("class", "legendRect")
                     .attr("x", width - width / 4)
                     .attr("y", 10)
@@ -346,21 +347,21 @@ class GeoVis {
             exit => {return exit.remove();}
         )
 
+        // Add min and max values in legend
         var legendText = this.geographicalSvg
-            .selectAll("rect")
+            .selectAll("text")
             .data(["start", "end"], d => d)
-        
         legendText.join(
             enter => {
-                return enter.append("rect")
-                    .attr("class", "legendRect")
-                    .attr("text-anchor", "start")
+                return enter.append("text").merge(legendText)
+                    .attr("class", "legendRectText")
+                    .attr("text-anchor", d => d)
                     .attr("x", (d, i) => width - (1 - i) * (width / 4))
                     .attr("y", 30)
                     .attr("dy", ".35em")
                     .text(d => d == "start" ? 0 : this.stateCountStats.max);
             },
-            update => {return update},
+            update => {return update;},
             exit => {return exit.remove();}
         )
     }
