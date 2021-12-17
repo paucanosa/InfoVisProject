@@ -93,7 +93,7 @@ class BasicVis {
     this.marginWeatherplot = {
       top: 10,
       right: 5,
-      bottom: 30,
+      bottom: 40,
       left: 40,
     };
     this.widthWeatherplot =
@@ -293,7 +293,8 @@ class BasicVis {
       .style("background", "black")
       .style("padding", "15px")
       .style("border-radius", "5px")
-      .style("color", "white");
+      .style("color", "white")
+      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
 
       tooltip.append("div").text("Low: " + data[1]);
       tooltip.append("div").text("Medium: " + data[2]);
@@ -422,6 +423,7 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
+      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
 
     const mouseover = function(event, d) {
       var width = tooltip.node().getBoundingClientRect().width
@@ -566,6 +568,7 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
+      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
 
     const mouseover = function(event, d) {
       var width = tooltip.node().getBoundingClientRect().width
@@ -688,6 +691,11 @@ class BasicVis {
     //Updates x Axis for the new 15 categories of weather
     this.xWeatherplot.domain(chartData.map(item=>{return item.weather}));
     this.xAxisWeatherplot.call(d3.axisBottom(this.xWeatherplot));
+    this.xAxisWeatherplot.selectAll("text")  
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-15)");
 
     // Updates y Axis for the new range of values
     this.yWeatherplot.domain([
@@ -716,6 +724,7 @@ class BasicVis {
       .style("border-radius", "5px")
       .style("padding", "10px")
       .style("font-size", "13px")
+      .style('font-family','Verdana, Geneva, Tahoma, sans-serif');
 
     const mouseover = function(event, d) {
       var width = tooltip.node().getBoundingClientRect().width
