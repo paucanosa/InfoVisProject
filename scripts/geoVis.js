@@ -6,6 +6,8 @@ class GeoVis {
         this.geoData = params.geoData;
         this.censusData = params.censusData;
 
+        this.weightedByPopulation = false;
+
         this.stateMapping = {};
         this.stateCounts = {};
         this.weightedStateCounts = {};
@@ -155,8 +157,8 @@ class GeoVis {
                 ["Accidents", "Accidents: " + accidentCount.toLocaleString()],
                 ["Accidents per million inhabitants", "Accidents per million inhabitants: " + parseInt(accidentCount / statePopulation * 1_000_000)],
                 ["Accident percentage", "Accident % (regarding US total): " + (isFinite(accidentPercentage) ? accidentPercentage.toFixed(1) : 0) + "%"],
-                ["Delta from mean", "Delta from mean: " + (accidentCount - this.stateCountStats.mean).toFixed(1)],
-                ["Delta from max", "Delta from max: " + (accidentCount - this.stateCountStats.max).toFixed(1)],
+                ["Delta from mean", "Delta from mean: " + (accidentCount - this.stateCountStats.absolute_mean).toFixed(1)],
+                ["Delta from max", "Delta from max: " + (accidentCount - this.stateCountStats.absolute_max).toFixed(1)],
                 ["Avg. Severity", "Avg. Severity : " + averageSeverity.toFixed(1)],
                 ["Avg. T", "Avg. T° : " + averageTemperature.toFixed(1) + " °F"],
                 ["Avg. Humidity", "Avg. Humidity : " + averageHumidity.toFixed(1) + "%"],
@@ -266,8 +268,6 @@ class GeoVis {
         // Get points and counts per state
         this.points = this.currentData.map(d => [parseFloat(d['Start_Lng']), parseFloat(d['Start_Lat'])]);
 
-        var weightedByPopulation = true;
-
         this.statesData.forEach(stateData => this.stateCounts[stateData.label] = 0);
         this.statesData.forEach(stateData => this.weightedStateCounts[stateData.label] = 0);
         
@@ -277,7 +277,7 @@ class GeoVis {
                 this.stateCounts[row["STATE"]] / row["POPESTIMATE2019"] * 1_000_000;
         });
 
-        var counts = weightedByPopulation ? this.weightedStateCounts : this.stateCounts;
+        var counts = this.weightedByPopulation ? this.weightedStateCounts : this.stateCounts;
         
         
         // Calculate global stats
@@ -285,7 +285,11 @@ class GeoVis {
             'min': 0,
             'max': 0,
             'total': 0,
-            'mean': 0.0
+            'mean': 0.0,
+            'absolute_max': 0,
+            'absolute_min': 0,
+            'absolute_total': 0,
+            'absolute_mean': 0.0,
         };
 
         for (let [state, count] of Object.entries(counts)) {
@@ -298,7 +302,19 @@ class GeoVis {
             }
         };
 
+        // Also store the absolute counts as we need them in the sidepanel later
+        for (let [state, count] of Object.entries(this.stateCounts)) {
+            this.stateCountStats.absolute_total += count;
+            if (count < this.stateCountStats.absolute_min) {
+                this.stateCountStats.absolute_min = parseInt(count);
+            }
+            if (count > this.stateCountStats.absolute_max) {
+                this.stateCountStats.absolute_max = parseInt(count);
+            }
+        };
+
         this.stateCountStats.mean = parseFloat(this.stateCountStats.total) / Object.entries(counts).length
+        this.stateCountStats.absolute_mean = parseFloat(this.stateCountStats.absolute_total) / Object.entries(this.stateCounts).length
 
         // Create color scale for heatmap.
         // Min is slightly below zero to color states without accidents lightblue.

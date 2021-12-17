@@ -251,9 +251,18 @@
 
    
     <div class="geographical-visualization-container">
-      <svg id="geographicalchart" width="1000" height="600"></svg>
+      <div id="severitychart" class="basic-visualization__severity-container">
+        <p class="time-filter-title" id="geo-title">Heatmap severity per state</p>
+        <div class="button-swap-time-container">
+          <p class="button-swap-time" id="togglegeoweightedbutton" onclick="toggleGeoWeightedMethod()">Per capita</p>
+        </div>
+        <svg id="geographicalchart" width="1000" height="600"></svg>
+      </div>
       <div class="geo-map-separator"></div>
-      <svg id="geographicalsidechart" width="400" height="600"></svg>
+      <div id="severitychart" class="basic-visualization__severity-container">
+        <p class="chart-title">State information panel</p>
+        <svg id="geographicalsidechart" width="400" height="600"></svg>
+      </div>
     </div>
     <script src="scripts/basicVis.js"></script>
     <script src="scripts/geoVis.js"></script>

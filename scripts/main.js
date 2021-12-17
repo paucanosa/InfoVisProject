@@ -173,6 +173,24 @@ function swapTimeFilterMethod(){
   }
 }
 
+/**
+  * Toggles between absolute or weighted by population accident counts in geographical charts
+  */
+function toggleGeoWeightedMethod(){
+  const swapButton = document.getElementById('togglegeoweightedbutton');
+  const title = document.getElementById('geo-title');
+  geoVis.weightedByPopulation = !geoVis.weightedByPopulation
+
+  if (geoVis.weightedByPopulation) {
+    swapButton.innerHTML = "Per capita"
+    title.innerHTML = "Heatmap accidents per state per million inhabitants"
+  } else {
+    swapButton.innerHTML = "Absolute"
+    title.innerHTML = "Heatmap accidents per state"
+  }
+  geoVis.updateData(currentData);
+}
+
  /**
    * Initializes the filters elements inside the filter container.
    */
